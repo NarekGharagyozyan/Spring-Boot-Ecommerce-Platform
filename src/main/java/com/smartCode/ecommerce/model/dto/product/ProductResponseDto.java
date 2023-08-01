@@ -9,6 +9,8 @@ import java.time.LocalDate;
 @Setter
 public class ProductResponseDto extends ProductBaseDto{
 
+    private Integer id;
+
     private LocalDate productionDate;
 
     private Boolean isInDeadline;

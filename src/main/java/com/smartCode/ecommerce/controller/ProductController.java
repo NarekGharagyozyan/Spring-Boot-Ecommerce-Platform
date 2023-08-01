@@ -7,8 +7,12 @@ import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchPro
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.model.entity.product.ProductEntity;
 import com.smartCode.ecommerce.service.product.ProductService;
+import com.smartCode.ecommerce.util.constants.Path;
+import com.smartCode.ecommerce.util.constants.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,72 +23,70 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@Validated
 @RequiredArgsConstructor
+@RequestMapping(Path.PRODUCTS)
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductMapper productMapper;
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> findProduct(@PathVariable Integer id) {
-        ProductEntity productEntityById = productService.findProductById(id);
-        ProductResponseDto responseDto = productMapper.toResponseDto(productEntityById);
-        return ResponseEntity.ok(responseDto);
+    @GetMapping(Path.FIND)
+    public ResponseEntity<ProductResponseDto> findProduct(@PathVariable @Positive Integer id) {
+        ProductResponseDto productById = productService.findProductById(id);
+        return ResponseEntity.ok(productById);
     }
 
-    @GetMapping
+    @GetMapping(Path.FIND_ALL)
     public ResponseEntity<List<ProductResponseDto>> findAllProducts() {
-        List<ProductEntity> allProductEntities = productService.findAllProducts();
-        List<ProductResponseDto> responseDtoList = productMapper.toResponseDtoList(allProductEntities);
+        List<ProductResponseDto> products = productService.findAllProducts();
+        return ResponseEntity.ok(products);
+    }
+
+    @PostMapping(Path.CREATE)
+    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody @Valid ProductEntity productEntity) {
+        ProductResponseDto productResponseDto = productService.create(productEntity);
+        return ResponseEntity.ok(productResponseDto);
+    }
+
+    @PutMapping(Path.UPDATE_ALL)
+    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable @Positive Integer id,
+                                                            @RequestBody @Valid ProductUpdateDto productUpdate) {
+
+        ProductResponseDto productResponseDto = productService.updateProduct(id, productUpdate);
+        return ResponseEntity.ok(productResponseDto);
+    }
+
+    @PatchMapping(Path.UPDATE)
+    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    public ResponseEntity<ProductResponseDto> updatePartProduct(@PathVariable @Positive Integer id,
+                                                                @RequestBody @Valid ProductUpdateDto productUpdate) {
+        ProductResponseDto productResponseDto = productService.updatePartProduct(id, productUpdate);
+        return ResponseEntity.ok(productResponseDto);
+    }
+
+    @DeleteMapping(Path.DELETE)
+    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable @Positive Integer id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(Path.FILTER)
+    public ResponseEntity<List<ProductResponseDto>> filterProduct(@RequestBody @Valid FilterSearchProduct.Filter productFilter) {
+        List<ProductResponseDto> responseDtoList = productService.filter(productFilter);
         return ResponseEntity.ok(responseDtoList);
     }
 
-    @PostMapping
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody ProductEntity productEntity) {
-        ProductEntity responseEntity = productService.create(productEntity);
-        ProductResponseDto responseDto = productMapper.toResponseDto(responseEntity);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Integer id,
-                                                            @RequestBody ProductUpdateDto productUpdate) {
-
-        ProductEntity responseEntity = productService.updateProduct(id, productUpdate);
-        ProductResponseDto responseDto = productMapper.toResponseDto(responseEntity);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> updatePartProduct(@PathVariable Integer id,
-                                                                @RequestBody ProductUpdateDto productUpdate) {
-        ProductEntity responseEntity = productService.updatePartProduct(id, productUpdate);
-        ProductResponseDto responseDto = productMapper.toResponseDto(responseEntity);
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteProduct(@PathVariable Integer id) {
-        Boolean isDeleted = productService.deleteProduct(id);
-        return ResponseEntity.ok(isDeleted);
-    }
-
-    @PostMapping("/filter")
-    public ResponseEntity<List<ProductResponseDto>> filterProduct(@RequestBody FilterSearchProduct.Filter productFilter) {
-        List<ProductEntity> productEntities = productService.filter(productFilter);
-        List<ProductResponseDto> responseDtoList = productMapper.toResponseDtoList(productEntities);
-        return ResponseEntity.ok(responseDtoList);
-    }
-
-    @PostMapping("/search")
-    public ResponseEntity<List<ProductResponseDto>> search(@RequestBody FilterSearchUser.Search text) {
-        List<ProductEntity> productEntities = productService.search(text);
-        List<ProductResponseDto> responseDtoList = productMapper.toResponseDtoList(productEntities);
+    @PostMapping(Path.SEARCH)
+    public ResponseEntity<List<ProductResponseDto>> search(@RequestBody @Valid FilterSearchUser.Search text) {
+        List<ProductResponseDto> responseDtoList = productService.search(text);
         return ResponseEntity.ok(responseDtoList);
     }
 }

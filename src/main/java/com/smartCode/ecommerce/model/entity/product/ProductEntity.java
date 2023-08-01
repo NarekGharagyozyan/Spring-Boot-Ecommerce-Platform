@@ -36,15 +36,4 @@ public class ProductEntity extends BaseEntity {
 
     private Boolean isInDeadline;
 
-    @Override
-    protected void onRegister() {
-        super.onRegister();
-
-        if (category.equalsIgnoreCase("Grocery")) {
-            if (LocalDate.now().getDayOfMonth() - productionDate.getDayOfMonth() < 4)
-                isInDeadline = true;
-            else
-                isInDeadline = false;
-        }
-    }
 }
