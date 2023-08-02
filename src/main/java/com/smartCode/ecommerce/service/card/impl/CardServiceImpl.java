@@ -1,8 +1,11 @@
 package com.smartCode.ecommerce.service.card.impl;
 
+import com.smartCode.ecommerce.exceptions.DuplicationException;
+import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.service.card.CardService;
+import com.smartCode.ecommerce.util.constants.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,10 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardResponseDto create(CardRequestDto cardRequestDto) {
+        int length = cardRequestDto.getNumber().toCharArray().length;
+        if (length != 16) {
+            throw new ValidationException(Message.CARD_NOT_FOUND);
+        }
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForEntity(
                 "http://localhost:8081/cards/create",
@@ -45,8 +52,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public List<CardResponseDto> findByUserId(Integer userId) {
-
-                RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
         return List.of(Objects.requireNonNull(restTemplate.getForEntity(
                 String.format("http://localhost:8081/cards/find/%d", userId),
                 CardResponseDto[].class).getBody()));

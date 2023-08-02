@@ -1,5 +1,6 @@
 package com.smartCode.ecommerce.exceptions.exceptionHandler;
 
+import com.smartCode.ecommerce.exceptions.DuplicationException;
 import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ApiError> verificationException(HttpServletRequest req, VerificationException e) {
         return buildResponse(HttpStatus.UNAUTHORIZED, e.getMessage(), req.getRequestURI());
+    }
+
+    @ExceptionHandler(DuplicationException.class)
+    @ResponseStatus(code = HttpStatus.CONFLICT)
+    public ResponseEntity<ApiError> runtimeException(HttpServletRequest req, DuplicationException e) {
+        return buildResponse(HttpStatus.CONFLICT, e.getMessage(), req.getRequestURI());
     }
 
     @ExceptionHandler(RuntimeException.class)

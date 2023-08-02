@@ -1,5 +1,6 @@
 package com.smartCode.ecommerce.service.user.impl;
 
+import com.smartCode.ecommerce.exceptions.DuplicationException;
 import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
@@ -41,6 +42,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponseDto register(UserRequestDto user) {
+        if (userRepository.findByUsername(user.getUsername()) != null){
+            throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null){
+            throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
+        }
+        if (userRepository.findByPhone(user.getPhone()) != null){
+            throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
+        }
+
         UserEntity entity = userMapper.toEntity(user);
         String generatedCode = RandomGenerator.generateNumericString(6);
         entity.setCode(generatedCode);
@@ -142,6 +153,16 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto update(Integer id, UserUpdateDto userUpdateDto) {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
+
+        if (userRepository.findByUsername(userUpdateDto.getUsername()) != null){
+            throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
+        }
+        if (userRepository.findByEmail(userUpdateDto.getEmail()) != null){
+            throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
+        }
+        if (userRepository.findByPhone(userUpdateDto.getPhone()) != null){
+            throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
+        }
 
         userEntity.setEmail(nonNull(userUpdateDto.getEmail()) ? userUpdateDto.getEmail() : userEntity.getEmail());
         userEntity.setPhone(nonNull(userUpdateDto.getPhone()) ? userUpdateDto.getPhone() : userEntity.getPhone());
