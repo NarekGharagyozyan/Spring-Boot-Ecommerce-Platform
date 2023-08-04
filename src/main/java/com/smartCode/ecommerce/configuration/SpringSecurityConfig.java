@@ -1,56 +1,67 @@
 package com.smartCode.ecommerce.configuration;
 
 import com.smartCode.ecommerce.util.constants.Path;
-import com.smartCode.ecommerce.util.constants.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.data.auditing.config.AuditingConfiguration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final UserDetailsService userDetailsService;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+        http.httpBasic().disable()
+                .csrf().disable()
+                .cors().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeHttpRequests()
                 .antMatchers(
-                        "/users/login",
-                        "/users/register")
+                        Path.USERS + Path.REGISTER,
+                        Path.USERS + Path.LOGIN,
+                        Path.USERS + Path.FILTER,
+                        Path.USERS + Path.SEARCH,
+                        Path.PRODUCTS + Path.FIND,
+                        Path.PRODUCTS + Path.FIND_ALL,
+                        Path.PRODUCTS + Path.FILTER,
+                        Path.PRODUCTS + Path.SEARCH)
                 .permitAll()
-                .and()
-                .httpBasic(Customizer.withDefaults());
+                .and();
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public DaoAuthenticationProvider authenticationProvider() {
+        var authProvider = new DaoAuthenticationProvider();
 
-        UserDetails ramesh = User.builder()
-                .username("narek")
-                .password(passwordEncoder().encode("password"))
-                .roles(Role.USER_ROLE)
-                .build();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
 
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles(Role.ADMIN_ROLE)
-                .build();
+        return authProvider;
+    }
 
-        return new InMemoryUserDetailsManager(ramesh, admin);
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

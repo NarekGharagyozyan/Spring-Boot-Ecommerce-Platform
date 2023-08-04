@@ -1,6 +1,5 @@
 package com.smartCode.ecommerce.controller;
 
-import com.smartCode.ecommerce.mapper.ProductMapper;
 import com.smartCode.ecommerce.model.dto.product.ProductResponseDto;
 import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
@@ -8,7 +7,7 @@ import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.model.entity.product.ProductEntity;
 import com.smartCode.ecommerce.service.product.ProductService;
 import com.smartCode.ecommerce.util.constants.Path;
-import com.smartCode.ecommerce.util.constants.Role;
+import com.smartCode.ecommerce.util.constants.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,14 +47,14 @@ public class ProductController {
     }
 
     @PostMapping(Path.CREATE)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<ProductResponseDto> createProduct(@RequestBody @Valid ProductEntity productEntity) {
         ProductResponseDto productResponseDto = productService.create(productEntity);
         return ResponseEntity.ok(productResponseDto);
     }
 
     @PutMapping(Path.UPDATE_ALL)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable @Positive Integer id,
                                                             @RequestBody @Valid ProductUpdateDto productUpdate) {
 
@@ -64,7 +63,7 @@ public class ProductController {
     }
 
     @PatchMapping(Path.UPDATE)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<ProductResponseDto> updatePartProduct(@PathVariable @Positive Integer id,
                                                                 @RequestBody @Valid ProductUpdateDto productUpdate) {
         ProductResponseDto productResponseDto = productService.updatePartProduct(id, productUpdate);
@@ -72,7 +71,7 @@ public class ProductController {
     }
 
     @DeleteMapping(Path.DELETE)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<Void> deleteProduct(@PathVariable @Positive Integer id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok().build();

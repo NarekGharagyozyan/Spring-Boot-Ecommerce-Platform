@@ -18,7 +18,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class RoleEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,5 +25,4 @@ public class RoleEntity {
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private Role role;
-
 }

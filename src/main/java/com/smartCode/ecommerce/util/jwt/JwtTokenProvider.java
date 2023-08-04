@@ -10,12 +10,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component("jwtProvider")
@@ -76,11 +79,8 @@ public class JwtTokenProvider {
         return accessTokenExpirationMs;
     }
 
-    public String getRole(String jwt) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("role", String.class);
-    }
-
-    public Long getId(String token) {
-        return 3L;
+    public List<? extends GrantedAuthority> getRole(String jwt) {
+        var s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("role", String.class);
+        return List.of(new SimpleGrantedAuthority(s));
     }
 }

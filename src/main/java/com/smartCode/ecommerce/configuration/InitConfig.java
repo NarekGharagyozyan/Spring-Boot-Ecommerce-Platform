@@ -6,6 +6,10 @@ import com.smartCode.ecommerce.util.constants.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
+import com.smartCode.ecommerce.repository.RoleRepository;
+import com.smartCode.ecommerce.util.constants.Role;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 
@@ -24,6 +28,7 @@ public class InitConfig {
             admin.setRole(Role.ROLE_ADMIN);
             roleRepository.save(admin);
         }
+
 
         if (!roleRepository.existsByRole(Role.ROLE_USER)) {
             var user = new RoleEntity();

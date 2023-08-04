@@ -5,21 +5,30 @@ import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
 import com.smartCode.ecommerce.mapper.UserMapper;
+import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.model.entity.user.UserEntity;
+import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.repository.UserRepository;
 import com.smartCode.ecommerce.service.email.EmailService;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.codeGenerator.RandomGenerator;
 import com.smartCode.ecommerce.util.constants.Message;
+import com.smartCode.ecommerce.util.constants.Role;
 import com.smartCode.ecommerce.util.constants.Root;
 import com.smartCode.ecommerce.util.encoder.MD5Encoder;
+import com.smartCode.ecommerce.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -38,6 +47,11 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final UserMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -56,7 +70,8 @@ public class UserServiceImpl implements UserService {
         String generatedCode = RandomGenerator.generateNumericString(6);
         entity.setCode(generatedCode);
         setUserAge(entity);
-        entity.setPassword(MD5Encoder.encode(user.getPassword()));
+        entity.setPassword(passwordEncoder.encode(user.getPassword()));
+        entity.setRole(roleRepository.findByRole(Role.ROLE_USER));
         UserEntity save = userRepository.save(entity);
         emailService.sendSimpleMessage(user.getEmail(), Message.EMAIL_SUBJECT,
                 Message.EMAIL_MESSAGE + generatedCode);
@@ -64,9 +79,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public UserResponseDto login(String username, String password) {
-        UserEntity byUsername = userRepository.findByUsername(username);
+    @Transactional(readOnly = true)
+    public UserAuthDto login(String username, String password) {
+        /*UserEntity byUsername = userRepository.findByUsername(username);
         if (nonNull(byUsername)) {
             if (byUsername.getIsVerified()) {
                 if (MD5Encoder.encode(password).equals(byUsername.getPassword()))
@@ -76,7 +91,14 @@ public class UserServiceImpl implements UserService {
             } else
                 throw new VerificationException(Message.VERIFY_ACCOUNT);
         }
-        throw new ResourceNotFoundException(Message.USER_NOT_FOUND);
+        throw new ResourceNotFoundException(Message.USER_NOT_FOUND);*/
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                username,password));
+        UserEntity userDetails = (UserEntity) userDetailsService.loadUserByUsername(username);
+        Integer userId = userDetails.getId();
+        String accessToken = jwtTokenProvider.generateAccessToken(userId, userDetails.getUsername(), userDetails.getRole().getRole().getName());
+        return new UserAuthDto(userId,accessToken);
     }
 
     @Override
@@ -120,13 +142,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(Integer id) {
-        userRepository.delete(userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(Message.USER_NOT_FOUND)));
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
+        userRepository.delete(userEntity);
 
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.delete(
-                String.format("http://localhost:8081/cards/delete/%d",id));
+                String.format("http://localhost:8081/cards/delete/owner/%d",id));
     }
 
 
@@ -247,4 +270,6 @@ public class UserServiceImpl implements UserService {
         int age = currentYear - user.getDate().getYear();
         user.setAge(age);
     }
+
+
 }
