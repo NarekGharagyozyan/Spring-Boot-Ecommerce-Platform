@@ -5,6 +5,7 @@ import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.util.constants.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
@@ -15,6 +16,7 @@ public class InitConfig {
     private final RoleRepository roleRepository;
 
     @PostConstruct
+    @Transactional
     public void setupBb() {
         if (!roleRepository.existsByRole(Role.ROLE_ADMIN)){
             var admin = new RoleEntity();
