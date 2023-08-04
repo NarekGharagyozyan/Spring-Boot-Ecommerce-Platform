@@ -44,6 +44,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuedAt(new Date()) //
                 .setExpiration(new Date((new Date()).getTime() + accessTokenExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
@@ -82,5 +83,4 @@ public class JwtTokenProvider {
         var s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("role", String.class);
         return List.of(new SimpleGrantedAuthority(s));
     }
-
 }
