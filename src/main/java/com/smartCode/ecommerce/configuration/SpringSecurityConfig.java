@@ -28,14 +28,8 @@ public class SpringSecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers(
-                        Path.USERS + Path.REGISTER,
-                        Path.USERS + Path.FILTER,
-                        Path.USERS + Path.SEARCH,
-                        Path.CARDS + Path.CREATE,
-                        Path.PRODUCTS + Path.FIND,
-                        Path.PRODUCTS + Path.FIND_ALL,
-                        Path.PRODUCTS + Path.FILTER,
-                        Path.PRODUCTS + Path.SEARCH)
+                        "/users/login",
+                        "/users/register")
                 .permitAll()
                 .and()
                 .httpBasic(Customizer.withDefaults());
