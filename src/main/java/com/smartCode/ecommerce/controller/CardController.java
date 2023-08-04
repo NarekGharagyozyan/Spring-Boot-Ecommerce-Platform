@@ -5,7 +5,7 @@ import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.service.card.CardService;
 import com.smartCode.ecommerce.util.constants.Path;
-import com.smartCode.ecommerce.util.constants.Role;
+import com.smartCode.ecommerce.util.constants.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,27 +31,28 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping(Path.CREATE)
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<CardResponseDto> createCard(@RequestBody @Valid CardRequestDto cardRequestDto) {
         CardResponseDto cardResponseDto = cardService.create(cardRequestDto);
         return ResponseEntity.ok(cardResponseDto);
     }
 
     @GetMapping(Path.FIND_WITH_OWNER_ID)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<List<CardResponseDto>> findByUserId(@PathVariable @Positive Integer ownerId) {
         List<CardResponseDto> byUserId = cardService.findByUserId(ownerId);
         return ResponseEntity.ok(byUserId);
     }
 
     @DeleteMapping(Path.DELETE_WITH_OWNER_ID)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<Void> deleteAllByOwnerId(@PathVariable @Positive Integer ownerId) {
         cardService.deleteAllByOwnerId(ownerId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(Path.DELETE_WITH_CARD_ID)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> deleteByCardId(@PathVariable @Positive Integer cardId) {
         cardService.deleteByCardId(cardId);
         return ResponseEntity.ok().build();

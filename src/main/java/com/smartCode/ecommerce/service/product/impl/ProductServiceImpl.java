@@ -40,14 +40,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ProductResponseDto findProductById(Integer id) {
         return productMapper.toResponseDto(productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(Message.PRODUCT_NOT_FOUND)));
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> findAllProducts() {
         return productMapper.toResponseDtoList(productRepository.findAll());
     }
@@ -68,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductResponseDto updatePartProduct(Integer id, ProductUpdateDto productUpdateDto) {
         ProductEntity existingProd = productRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(Message.PRODUCT_NOT_FOUND));
@@ -83,6 +84,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<ProductResponseDto> filter(FilterSearchProduct.Filter productFilter) {
         Specification<ProductEntity> specification = Specification.where((root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
@@ -109,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<ProductResponseDto> search(FilterSearchUser.Search productSearch) {
         Specification<ProductEntity> specification = Specification.where((root, criteriaQuery, criteriaBuilder) -> {
             var predicates = new ArrayList<Predicate>();
@@ -130,6 +133,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Async
     @Override
+    @Transactional
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
     }

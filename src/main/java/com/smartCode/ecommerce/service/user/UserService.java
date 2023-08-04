@@ -1,5 +1,6 @@
 package com.smartCode.ecommerce.service.user;
 
+import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
@@ -23,7 +24,7 @@ public interface UserService {
 
     List<UserResponseDto> search(FilterSearchUser.Search text);
 
-    UserResponseDto login(String username, String password);
+    UserAuthDto login(String username, String password);
 
     void changePassword(String email, String password, String newPassword ,String repeatPassword);
 }

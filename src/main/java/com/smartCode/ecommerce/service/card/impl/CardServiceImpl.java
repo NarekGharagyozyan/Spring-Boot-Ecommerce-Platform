@@ -38,7 +38,8 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public CardResponseDto create(CardRequestDto cardRequestDto) {
-        int length = cardRequestDto.getNumber().toCharArray().length;
+        String number = cardRequestDto.getNumber();
+        int length = number.replace(" ", "").toCharArray().length;
         if (length != 16) {
             throw new ValidationException(Message.CARD_NOT_FOUND);
         }
@@ -50,7 +51,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CardResponseDto> findByUserId(Integer userId) {
         RestTemplate restTemplate = new RestTemplate();
         return List.of(Objects.requireNonNull(restTemplate.getForEntity(

@@ -1,12 +1,13 @@
 package com.smartCode.ecommerce.controller;
 
+import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.constants.Path;
-import com.smartCode.ecommerce.util.constants.Role;
+import com.smartCode.ecommerce.util.constants.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,23 +44,21 @@ public class AccountController {
     }
 
     @PostMapping(Path.LOGIN)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
-    public ResponseEntity<UserResponseDto> login(@RequestParam @NotBlank String username,
-                                                 @RequestParam @NotBlank String password) {
+    public ResponseEntity<UserAuthDto> login(@RequestParam @NotBlank String username,
+                                             @RequestParam @NotBlank String password) {
 
-        UserResponseDto userResponseDto = userService.login(username, password);
-        return ResponseEntity.ok(userResponseDto);
+        return ResponseEntity.ok(userService.login(username, password));
     }
 
     @GetMapping(Path.FIND)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<UserResponseDto> getById(@PathVariable @Positive Integer id) {
         UserResponseDto userResponseDto = userService.getById(id);
         return ResponseEntity.ok(userResponseDto);
     }
 
     @GetMapping(Path.FIND_ALL)
-    @PreAuthorize("hasRole('" + Role.ADMIN_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> allUsers = userService.getAllUsers();
         return ResponseEntity.ok(allUsers);
@@ -67,7 +66,7 @@ public class AccountController {
 
 
     @PatchMapping(Path.UPDATE)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<UserResponseDto> updateUserPartial(@PathVariable @Positive Integer id,
                                                       @RequestBody @Valid UserUpdateDto userUpdateDto) {
         UserResponseDto userResponseDto = userService.update(id, userUpdateDto);
@@ -75,14 +74,14 @@ public class AccountController {
     }
 
     @DeleteMapping(Path.DELETE)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> deleteUser(@PathVariable @Positive Integer id) {
         userService.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(Path.VERIFY)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> verifyUser(@RequestParam @Email String email,
                                               @RequestParam @Size(min = 6, max = 6) String code) {
         userService.verify(email, code);
@@ -90,7 +89,7 @@ public class AccountController {
     }
 
     @PostMapping(Path.CHANGE_PASSWORD)
-    @PreAuthorize("hasRole('" + Role.USER_ROLE + "')")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> changePassword(@RequestParam @Email String email,
                                               @RequestParam @NotBlank String password,
                                               @RequestParam @NotBlank String newPassword,
