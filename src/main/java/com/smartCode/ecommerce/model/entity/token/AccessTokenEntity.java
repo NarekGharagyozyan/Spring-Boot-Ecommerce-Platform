@@ -1,6 +1,6 @@
-package com.smartCode.ecommerce.model.entity.role;
+package com.smartCode.ecommerce.model.entity.token;
 
-import com.smartCode.ecommerce.util.constants.Role;
+import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,24 +8,28 @@ import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Setter
 @Getter
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "roles")
-public class RoleEntity {
+@Table(name = "access_token")
+public class AccessTokenEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(nullable = false, unique = true)
-    @Enumerated(EnumType.STRING)
-    Role role;
+    @OneToOne(optional = false)
+    @MapsId()
+    UserEntity user;
+
+    @Column(unique = true, nullable = false)
+    String token;
 }

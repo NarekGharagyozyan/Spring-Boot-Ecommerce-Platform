@@ -1,8 +1,10 @@
 package com.smartCode.ecommerce.model.dto.user;
 
 import com.smartCode.ecommerce.util.constants.Gender;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Email;
@@ -10,13 +12,14 @@ import javax.validation.constraints.Email;
 @MappedSuperclass
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserBaseDto {
 
-    private String username;
+    String username;
 
     @Email
-    private String email;
+    String email;
 
-    private String phone;
+    String phone;
 
 }

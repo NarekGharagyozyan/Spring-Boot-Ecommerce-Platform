@@ -8,7 +8,10 @@ import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
+import com.smartCode.ecommerce.util.currentUser.CurrentUser;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -32,10 +35,11 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.USERS)
 public class AccountController {
 
-    private final UserService userService;
+    UserService userService;
 
     @PostMapping(Path.REGISTER)
     public ResponseEntity<UserResponseDto> registration(@RequestBody @Valid UserRequestDto user) {
@@ -46,8 +50,14 @@ public class AccountController {
     @PostMapping(Path.LOGIN)
     public ResponseEntity<UserAuthDto> login(@RequestParam @NotBlank String username,
                                              @RequestParam @NotBlank String password) {
-
         return ResponseEntity.ok(userService.login(username, password));
+    }
+
+    @PostMapping(Path.LOGOUT)
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
+    public ResponseEntity<Void> logout() {
+        userService.logout();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping(Path.FIND)
@@ -67,9 +77,8 @@ public class AccountController {
 
     @PatchMapping(Path.UPDATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<UserResponseDto> updateUserPartial(@PathVariable @Positive Integer id,
-                                                      @RequestBody @Valid UserUpdateDto userUpdateDto) {
-        UserResponseDto userResponseDto = userService.update(id, userUpdateDto);
+    public ResponseEntity<UserResponseDto> updateUserPartial(@RequestBody @Valid UserUpdateDto userUpdateDto) {
+        UserResponseDto userResponseDto = userService.update(CurrentUser.getId(), userUpdateDto);
         return ResponseEntity.ok(userResponseDto);
     }
 
@@ -90,12 +99,11 @@ public class AccountController {
 
     @PostMapping(Path.CHANGE_PASSWORD)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<Void> changePassword(@RequestParam @Email String email,
-                                              @RequestParam @NotBlank String password,
+    public ResponseEntity<Void> changePassword(@RequestParam @NotBlank String password,
                                               @RequestParam @NotBlank String newPassword,
                                               @RequestParam @NotBlank String newRepeatPassword) {
 
-        userService.changePassword(email, password, newPassword, newRepeatPassword);
+        userService.changePassword(password, newPassword, newRepeatPassword);
         return ResponseEntity.ok().build();
     }
 

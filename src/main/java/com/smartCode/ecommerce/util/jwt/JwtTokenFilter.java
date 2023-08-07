@@ -1,6 +1,12 @@
 package com.smartCode.ecommerce.util.jwt;
 
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
+import com.smartCode.ecommerce.repository.AccessTokenRepository;
+import com.smartCode.ecommerce.service.token.AccessTokenService;
+import com.smartCode.ecommerce.util.currentUser.CurrentUser;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,9 +27,12 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    JwtTokenProvider jwtTokenProvider;
+    AccessTokenRepository tokenRepository;
+    AccessTokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -40,10 +49,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        var userDetails = new User(
+        /*if(!tokenRepository.existsTokenByToken(token.split("\\.")[2])){
+            chain.doFilter(request,response);
+            return;
+        }*/
+
+        if(tokenService.getToken(token.split("\\.")[2]) == null){
+            chain.doFilter(request,response);
+            return;
+        }
+
+        var userDetails = UserDetailsImpl.build(
+                jwtTokenProvider.getId(token),
                 jwtTokenProvider.getSubject(token),
-                "null",
-                jwtTokenProvider.getRole(token));
+                jwtTokenProvider.getRole(token)
+        );
 
         var authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()

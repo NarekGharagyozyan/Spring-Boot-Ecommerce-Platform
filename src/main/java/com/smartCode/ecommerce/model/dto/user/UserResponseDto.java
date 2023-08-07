@@ -2,29 +2,32 @@ package com.smartCode.ecommerce.model.dto.user;
 
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.util.constants.Gender;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponseDto extends UserBaseDto{
 
-    private Integer id;
+    Integer id;
 
-    private String name;
+    String name;
 
-    private String middleName;
+    String middleName;
 
-    private String lastName;
+    String lastName;
 
-    private LocalDate date;
+    LocalDate date;
 
-    private Integer age;
+    Integer age;
 
-    private Gender gender;
+    Gender gender;
 
-    private List<CardResponseDto> cards;
+    List<CardResponseDto> cards;
 }

@@ -6,7 +6,9 @@ import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.service.card.CardService;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -25,10 +27,11 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.CARDS)
 public class CardController {
 
-    private final CardService cardService;
+    CardService cardService;
 
     @PostMapping(Path.CREATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")

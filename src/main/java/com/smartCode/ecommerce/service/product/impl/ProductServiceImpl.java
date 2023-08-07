@@ -11,7 +11,9 @@ import com.smartCode.ecommerce.repository.ProductRepository;
 import com.smartCode.ecommerce.service.product.ProductService;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Root;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,12 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
+    ProductRepository productRepository;
+    ProductMapper productMapper;
 
     @Async
     @Override

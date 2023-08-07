@@ -8,7 +8,9 @@ import com.smartCode.ecommerce.model.entity.product.ProductEntity;
 import com.smartCode.ecommerce.service.product.ProductService;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -29,10 +31,11 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.PRODUCTS)
 public class ProductController {
 
-    private final ProductService productService;
+    ProductService productService;
 
     @GetMapping(Path.FIND)
     public ResponseEntity<ProductResponseDto> findProduct(@PathVariable @Positive Integer id) {

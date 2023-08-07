@@ -26,5 +26,7 @@ public interface UserService {
 
     UserAuthDto login(String username, String password);
 
-    void changePassword(String email, String password, String newPassword ,String repeatPassword);
+    void logout();
+
+    void changePassword(String password, String newPassword ,String repeatPassword);
 }

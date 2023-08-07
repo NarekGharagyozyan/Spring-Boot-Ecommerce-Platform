@@ -1,12 +1,15 @@
 package com.smartCode.ecommerce.util.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,13 +26,14 @@ import java.util.List;
 @Slf4j
 @Component("jwtProvider")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtTokenProvider {
 
     @Value("${jwtSecret}")
-    private String jwtSecret;
+    String jwtSecret;
 
     @Value("${accessTokenExpirationMs}")
-    private long accessTokenExpirationMs;
+    long accessTokenExpirationMs;
 
     @PostConstruct
     protected void init() {
@@ -79,8 +83,13 @@ public class JwtTokenProvider {
         return accessTokenExpirationMs;
     }
 
-    public List<? extends GrantedAuthority> getRole(String jwt) {
-        var s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("role", String.class);
-        return List.of(new SimpleGrantedAuthority(s));
+    public String getRole(String jwt) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().get("role", String.class);
+    }
+
+    public Integer getId(String token) {
+        log.info("get id");
+        Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+        return body.get("userId", Integer.class);
     }
 }

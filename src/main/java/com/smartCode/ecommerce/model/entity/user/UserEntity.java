@@ -4,8 +4,10 @@ import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.model.entity.BaseEntity;
 import com.smartCode.ecommerce.model.entity.role.RoleEntity;
 import com.smartCode.ecommerce.util.constants.Gender;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,44 +30,45 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
-    private String name;
+    String name;
 
     @Column(nullable = false)
-    private String lastName;
+    String lastName;
 
     @Column(nullable = false)
-    private Integer age;
+    Integer age;
 
     @Column(nullable = false)
-    private LocalDate date;
+    LocalDate date;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    String username;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    String email;
 
     @Column(nullable = false, unique = true)
-    private String phone;
+    String phone;
 
     @Column(nullable = false)
-    private String password;
+    String password;
 
-    private String code;
+    String code;
 
-    private Boolean isVerified = false;
+    Boolean isVerified = false;
 
-    private String middleName;
+    String middleName;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    Gender gender;
 
     @ManyToOne(optional = false)
-    private RoleEntity role;
+    RoleEntity role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

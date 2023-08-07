@@ -1,10 +1,13 @@
 package com.smartCode.ecommerce.configuration;
 
 import com.smartCode.ecommerce.util.constants.Path;
+import com.smartCode.ecommerce.util.jwt.JwtTokenFilter;
+import com.smartCode.ecommerce.util.jwt.enteryPoint.JwtAuthEntryPoint;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.auditing.config.AuditingConfiguration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -14,12 +17,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    UserDetailsService userDetailsService;
+    JwtTokenFilter jwtTokenFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,7 +46,11 @@ public class SpringSecurityConfig {
                         Path.PRODUCTS + Path.FILTER,
                         Path.PRODUCTS + Path.SEARCH)
                 .permitAll()
-                .and();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new JwtAuthEntryPoint())
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

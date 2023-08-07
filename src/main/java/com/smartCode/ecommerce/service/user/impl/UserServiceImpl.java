@@ -10,23 +10,26 @@ import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
+import com.smartCode.ecommerce.model.entity.token.AccessTokenEntity;
 import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.repository.UserRepository;
 import com.smartCode.ecommerce.service.email.EmailService;
+import com.smartCode.ecommerce.service.token.AccessTokenService;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.codeGenerator.RandomGenerator;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Role;
 import com.smartCode.ecommerce.util.constants.Root;
-import com.smartCode.ecommerce.util.encoder.MD5Encoder;
+import com.smartCode.ecommerce.util.currentUser.CurrentUser;
 import com.smartCode.ecommerce.util.jwt.JwtTokenProvider;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,27 +45,29 @@ import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final UserMapper userMapper;
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    UserRepository userRepository;
+    EmailService emailService;
+    UserMapper userMapper;
+    AuthenticationManager authenticationManager;
+    JwtTokenProvider jwtTokenProvider;
+    UserDetailsService userDetailsService;
+    PasswordEncoder passwordEncoder;
+    RoleRepository roleRepository;
+    AccessTokenService tokenService;
 
     @Override
     @Transactional
     public UserResponseDto register(UserRequestDto user) {
-        if (userRepository.findByUsername(user.getUsername()) != null){
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
         }
-        if (userRepository.findByEmail(user.getEmail()) != null){
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
-        if (userRepository.findByPhone(user.getPhone()) != null){
+        if (userRepository.findByPhone(user.getPhone()) != null) {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
@@ -79,7 +84,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
+    public void logout() {
+        tokenService.deleteToken(CurrentUser.getId());
+    }
+
+    @Override
+    @Transactional
     public UserAuthDto login(String username, String password) {
         /*UserEntity byUsername = userRepository.findByUsername(username);
         if (nonNull(byUsername)) {
@@ -94,11 +105,19 @@ public class UserServiceImpl implements UserService {
         throw new ResourceNotFoundException(Message.USER_NOT_FOUND);*/
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                username,password));
-        UserEntity userDetails = (UserEntity) userDetailsService.loadUserByUsername(username);
-        Integer userId = userDetails.getId();
-        String accessToken = jwtTokenProvider.generateAccessToken(userId, userDetails.getUsername(), userDetails.getRole().getRole().getName());
-        return new UserAuthDto(userId,accessToken);
+                username, password));
+        UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(username);
+        Integer userId = user.getId();
+        String accessToken = jwtTokenProvider.generateAccessToken(userId, user.getUsername(), user.getRole().getRole().getName());
+
+        String token = accessToken.split("\\.")[2];
+        System.out.println(token);
+        AccessTokenEntity tokenEntity = new AccessTokenEntity();
+        tokenEntity.setToken(token);
+        tokenEntity.setUser(user);
+        tokenService.saveToken(tokenEntity);
+
+        return new UserAuthDto(userId, accessToken);
     }
 
     @Override
@@ -110,7 +129,7 @@ public class UserServiceImpl implements UserService {
 
         RestTemplate restTemplate = new RestTemplate();
         var responseEntity = restTemplate.getForEntity(
-                String.format("http://localhost:8081/cards/find/%d",id),
+                String.format("http://localhost:8081/cards/find/%d", id),
                 List.class);
 
         var cardResponseDto = responseEntity.getBody();
@@ -128,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
             RestTemplate restTemplate = new RestTemplate();
             var responseEntity = restTemplate.getForEntity(
-                    String.format("http://localhost:8081/cards/find/%d",responseDto.getId()),
+                    String.format("http://localhost:8081/cards/find/%d", responseDto.getId()),
                     List.class);
 
             var cardResponseDto = responseEntity.getBody();
@@ -149,26 +168,29 @@ public class UserServiceImpl implements UserService {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.delete(
-                String.format("http://localhost:8081/cards/delete/owner/%d",id));
+                String.format("http://localhost:8081/cards/delete/owner/%d", id));
     }
 
-
-    @Async
     @Override
     @Transactional
-    public void changePassword(String email, String password, String newPassword, String newRepeatPassword) {
+    public void changePassword(String password, String newPassword, String newRepeatPassword) {
         if (newPassword.equals(newRepeatPassword)) {
-            UserEntity user = userRepository.findByEmail(email);
+            UserEntity user = userRepository.findById(CurrentUser.getId()).orElseThrow(
+                    () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
             if (nonNull(user)) {
-                if (user.getPassword().equals(MD5Encoder.encode(password))) {
-                    user.setPassword(MD5Encoder.encode(newPassword));
+                System.out.println(passwordEncoder.matches(password, user.getPassword()));
+                if (passwordEncoder.matches(password, user.getPassword())) {
+                    user.setPassword(passwordEncoder.encode(newPassword));
                     userRepository.save(user);
                 }
-                throw new ValidationException(Message.WRONG_USERNAME_OR_PASSWORD);
+                else
+                    throw new ValidationException(Message.WRONG_USERNAME_OR_PASSWORD);
             }
-            throw new ResourceNotFoundException(Message.USER_NOT_FOUND);
+            else
+                throw new ResourceNotFoundException(Message.USER_NOT_FOUND);
         }
-        throw new ValidationException(Message.PASSWORDS_NOT_MATCHES);
+        else
+            throw new ValidationException(Message.PASSWORDS_NOT_MATCHES);
     }
 
     @Override
@@ -177,13 +199,13 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
 
-        if (userRepository.findByUsername(userUpdateDto.getUsername()) != null){
+        if (userRepository.findByUsername(userUpdateDto.getUsername()) != null) {
             throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
         }
-        if (userRepository.findByEmail(userUpdateDto.getEmail()) != null){
+        if (userRepository.findByEmail(userUpdateDto.getEmail()) != null) {
             throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
-        if (userRepository.findByPhone(userUpdateDto.getPhone()) != null){
+        if (userRepository.findByPhone(userUpdateDto.getPhone()) != null) {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
@@ -191,8 +213,8 @@ public class UserServiceImpl implements UserService {
         userEntity.setPhone(nonNull(userUpdateDto.getPhone()) ? userUpdateDto.getPhone() : userEntity.getPhone());
         userEntity.setUsername(nonNull(userUpdateDto.getUsername()) ? userUpdateDto.getUsername() : userEntity.getUsername());
         userEntity.setPassword(nonNull(userUpdateDto.getPassword()) ?
-                MD5Encoder.encode(userUpdateDto.getPassword()) :
-                MD5Encoder.encode(userEntity.getPassword()));
+                passwordEncoder.encode(userUpdateDto.getPassword()) :
+                passwordEncoder.encode(userEntity.getPassword()));
 
         return userMapper.toResponseDto(userEntity);
     }
@@ -265,6 +287,7 @@ public class UserServiceImpl implements UserService {
         });
         return userMapper.toResponseDtoList(userRepository.findAll(specification));
     }
+
     private static void setUserAge(UserEntity user) {
         int currentYear = Year.now().getValue();
         int age = currentYear - user.getDate().getYear();

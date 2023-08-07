@@ -1,14 +1,17 @@
 package com.smartCode.ecommerce.util.codeGenerator;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RandomGenerator {
 
-    private static final String NUMERIC = "0123456789";
-    private static final SecureRandom rnd = new SecureRandom();
+    static String NUMERIC = "0123456789";
+    static SecureRandom rnd = new SecureRandom();
 
     public static String generateNumericString(int length) {
         StringBuilder sb = new StringBuilder(length);

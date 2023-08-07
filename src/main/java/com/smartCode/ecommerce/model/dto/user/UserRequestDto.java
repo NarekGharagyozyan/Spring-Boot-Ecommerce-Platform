@@ -1,25 +1,28 @@
 package com.smartCode.ecommerce.model.dto.user;
 
 import com.smartCode.ecommerce.util.constants.Gender;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 
 @Setter
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequestDto extends UserBaseDto{
 
-    private String name;
+    String name;
 
-    private String lastName;
+    String lastName;
 
-    private LocalDate date;
+    LocalDate date;
 
-    private String middleName;
+    String middleName;
 
-    private Gender gender;
+    Gender gender;
 
-    private String password;
+    String password;
 
 }

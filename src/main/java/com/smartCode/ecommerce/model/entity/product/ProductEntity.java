@@ -1,8 +1,10 @@
 package com.smartCode.ecommerce.model.entity.product;
 
 import com.smartCode.ecommerce.model.entity.BaseEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,27 +15,28 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Entity
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
 
     @Column(nullable = false)
-    private String name;
+    String name;
 
     @Column(nullable = false)
-    private String company;
+    String company;
 
     @Column(nullable = false)
-    private Double price;
+    Double price;
 
     @Column(nullable = false)
-    private String category;
+    String category;
 
     @Column(nullable = false)
-    private Integer count;
+    Integer count;
 
     @Column(nullable = false)
-    private LocalDate productionDate;
+    LocalDate productionDate;
 
-    private Boolean isInDeadline;
+    Boolean isInDeadline;
 
 }
