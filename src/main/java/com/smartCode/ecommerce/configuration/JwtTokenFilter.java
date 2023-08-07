@@ -1,16 +1,13 @@
 package com.smartCode.ecommerce.configuration;
 
 import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
+import com.smartCode.ecommerce.repository.token.AccessTokenRepository;
 import com.smartCode.ecommerce.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,6 +23,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
+    private final AccessTokenRepository accessTokenRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -44,6 +42,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (!accessTokenRepository.existsByToken(token)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         var userDetails = UserDetailsImpl.build(
                 jwtTokenProvider.getId(token),
                 jwtTokenProvider.getSubject(token),
@@ -52,10 +55,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         var authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities()
-        );
-
-        authentication.setDetails(
-                new WebAuthenticationDetailsSource().buildDetails(request)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

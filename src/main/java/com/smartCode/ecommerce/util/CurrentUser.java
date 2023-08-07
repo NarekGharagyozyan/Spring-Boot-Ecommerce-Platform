@@ -1,14 +1,14 @@
-package com.click_market.utils.security;
+package com.smartCode.ecommerce.util;
 
-import com.click_market.model.dto.UserDetailsImpl;
-import com.click_market.utils.constants.RoleEnum;
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
+import com.smartCode.ecommerce.util.constants.Role;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @UtilityClass
 public class CurrentUser {
 
-    public static Long getId() {
+    public static Integer getId() {
         var principal = (UserDetailsImpl) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
@@ -25,10 +25,10 @@ public class CurrentUser {
     }
 
     public static boolean isAdmin() {
-        return getRole().equals(RoleEnum.ROLE_ADMIN.name());
+        return getRole().equals(Role.ROLE_ADMIN.getName());
     }
 
     public static boolean isUser() {
-        return getRole().equals(RoleEnum.ROLE_USER.name());
+        return getRole().equals(Role.ROLE_USER.getName());
     }
 }

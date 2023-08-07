@@ -14,13 +14,13 @@ import java.util.List;
 @Setter
 public class UserDetailsImpl implements UserDetails {
 
-    private final Long id;
+    private final Integer id;
     private final String username;
     private final String password;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    private UserDetailsImpl(Long id, String username,
+    private UserDetailsImpl(Integer id, String username,
                             String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
@@ -28,7 +28,7 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(Long id, String username, String role) {
+    public static UserDetailsImpl build(Integer id, String username, String role) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
 

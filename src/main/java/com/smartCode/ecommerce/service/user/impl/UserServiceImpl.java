@@ -5,16 +5,20 @@ import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
 import com.smartCode.ecommerce.mapper.UserMapper;
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
+import com.smartCode.ecommerce.model.entity.AccessTokenEntity;
 import com.smartCode.ecommerce.model.entity.user.UserEntity;
-import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.repository.UserRepository;
+import com.smartCode.ecommerce.repository.role.RoleRepository;
+import com.smartCode.ecommerce.repository.token.AccessTokenRepository;
 import com.smartCode.ecommerce.service.email.EmailService;
 import com.smartCode.ecommerce.service.user.UserService;
+import com.smartCode.ecommerce.util.CurrentUser;
 import com.smartCode.ecommerce.util.codeGenerator.RandomGenerator;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Role;
@@ -26,7 +30,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,17 +56,18 @@ public class UserServiceImpl implements UserService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final AccessTokenRepository accessTokenRepository;
 
     @Override
     @Transactional
     public UserResponseDto register(UserRequestDto user) {
-        if (userRepository.findByUsername(user.getUsername()) != null){
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
         }
-        if (userRepository.findByEmail(user.getEmail()) != null){
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
-        if (userRepository.findByPhone(user.getPhone()) != null){
+        if (userRepository.findByPhone(user.getPhone()) != null) {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
@@ -79,7 +84,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public UserAuthDto login(String username, String password) {
         /*UserEntity byUsername = userRepository.findByUsername(username);
         if (nonNull(byUsername)) {
@@ -94,11 +99,24 @@ public class UserServiceImpl implements UserService {
         throw new ResourceNotFoundException(Message.USER_NOT_FOUND);*/
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                username,password));
-        UserEntity userDetails = (UserEntity) userDetailsService.loadUserByUsername(username);
-        Integer userId = userDetails.getId();
-        String accessToken = jwtTokenProvider.generateAccessToken(userId, userDetails.getUsername(), userDetails.getRole().getRole().getName());
-        return new UserAuthDto(userId,accessToken);
+                username, password));
+        var userDetails = (UserEntity) userDetailsService.loadUserByUsername(username);
+        var userId = userDetails.getId();
+        var accessToken = jwtTokenProvider.generateAccessToken(userId, userDetails.getUsername(), userDetails.getRole().getRole().getName());
+        saveToken(userId, accessToken, userDetails);
+        return new UserAuthDto(userId, accessToken);
+    }
+
+    private void saveToken(Integer userId, String accessToken, UserEntity userDetails) {
+        if (accessTokenRepository.existsByUserId(userId)) {
+            var byUserId = accessTokenRepository.findByUserId(userId);
+            byUserId.setToken(accessToken);
+        } else {
+            var accessTokenEntity = new AccessTokenEntity();
+            accessTokenEntity.setUser(userDetails);
+            accessTokenEntity.setToken(accessToken);
+            accessTokenRepository.save(accessTokenEntity);
+        }
     }
 
     @Override
@@ -110,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
         RestTemplate restTemplate = new RestTemplate();
         var responseEntity = restTemplate.getForEntity(
-                String.format("http://localhost:8081/cards/find/%d",id),
+                String.format("http://localhost:8081/cards/find/%d", id),
                 List.class);
 
         var cardResponseDto = responseEntity.getBody();
@@ -123,12 +141,16 @@ public class UserServiceImpl implements UserService {
     public List<UserResponseDto> getAllUsers() {
         List<UserEntity> all = userRepository.findAll();
         List<UserResponseDto> responseDtos = new ArrayList<>();
+        var principal = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(principal.getUsername());
+        System.out.println(principal.getId());
+        System.out.println(principal.getAuthorities());
         for (UserEntity userEntity : all) {
             UserResponseDto responseDto = userMapper.toResponseDto(userEntity);
 
             RestTemplate restTemplate = new RestTemplate();
             var responseEntity = restTemplate.getForEntity(
-                    String.format("http://localhost:8081/cards/find/%d",responseDto.getId()),
+                    String.format("http://localhost:8081/cards/find/%d", responseDto.getId()),
                     List.class);
 
             var cardResponseDto = responseEntity.getBody();
@@ -149,7 +171,7 @@ public class UserServiceImpl implements UserService {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.delete(
-                String.format("http://localhost:8081/cards/delete/owner/%d",id));
+                String.format("http://localhost:8081/cards/delete/owner/%d", id));
     }
 
 
@@ -177,13 +199,13 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
 
-        if (userRepository.findByUsername(userUpdateDto.getUsername()) != null){
+        if (userRepository.findByUsername(userUpdateDto.getUsername()) != null) {
             throw new DuplicationException(Message.USER_WITH_USERNAME_ALREADY_EXISTS);
         }
-        if (userRepository.findByEmail(userUpdateDto.getEmail()) != null){
+        if (userRepository.findByEmail(userUpdateDto.getEmail()) != null) {
             throw new DuplicationException(Message.USER_WITH_EMAIL_ALREADY_EXISTS);
         }
-        if (userRepository.findByPhone(userUpdateDto.getPhone()) != null){
+        if (userRepository.findByPhone(userUpdateDto.getPhone()) != null) {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
@@ -265,6 +287,13 @@ public class UserServiceImpl implements UserService {
         });
         return userMapper.toResponseDtoList(userRepository.findAll(specification));
     }
+
+    @Override
+    @Transactional
+    public void logout() {
+        accessTokenRepository.deleteByUserId(CurrentUser.getId());
+    }
+
     private static void setUserAge(UserEntity user) {
         int currentYear = Year.now().getValue();
         int age = currentYear - user.getDate().getYear();

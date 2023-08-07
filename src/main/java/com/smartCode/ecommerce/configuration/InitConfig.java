@@ -6,11 +6,6 @@ import com.smartCode.ecommerce.util.constants.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
-import com.smartCode.ecommerce.repository.RoleRepository;
-import com.smartCode.ecommerce.util.constants.Role;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
-
 import javax.annotation.PostConstruct;
 
 @Configuration

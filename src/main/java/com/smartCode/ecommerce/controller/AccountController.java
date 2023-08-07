@@ -1,16 +1,20 @@
 package com.smartCode.ecommerce.controller;
 
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.service.user.UserService;
+import com.smartCode.ecommerce.util.CurrentUser;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +61,13 @@ public class AccountController {
         return ResponseEntity.ok(userResponseDto);
     }
 
+    @GetMapping("/test")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
+    public ResponseEntity<String> test() {
+//        userService.getAllUsers();
+        return ResponseEntity.ok("Test");
+    }
+
     @GetMapping(Path.FIND_ALL)
     @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
@@ -68,22 +79,22 @@ public class AccountController {
     @PatchMapping(Path.UPDATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<UserResponseDto> updateUserPartial(@PathVariable @Positive Integer id,
-                                                      @RequestBody @Valid UserUpdateDto userUpdateDto) {
+                                                             @RequestBody @Valid UserUpdateDto userUpdateDto) {
         UserResponseDto userResponseDto = userService.update(id, userUpdateDto);
         return ResponseEntity.ok(userResponseDto);
     }
 
-    @DeleteMapping(Path.DELETE)
+    @DeleteMapping
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<Void> deleteUser(@PathVariable @Positive Integer id) {
-        userService.delete(id);
+    public ResponseEntity<Void> deleteUser() {
+        userService.delete(CurrentUser.getId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(Path.VERIFY)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> verifyUser(@RequestParam @Email String email,
-                                              @RequestParam @Size(min = 6, max = 6) String code) {
+                                           @RequestParam @Size(min = 6, max = 6) String code) {
         userService.verify(email, code);
         return ResponseEntity.ok().build();
     }
@@ -91,9 +102,9 @@ public class AccountController {
     @PostMapping(Path.CHANGE_PASSWORD)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> changePassword(@RequestParam @Email String email,
-                                              @RequestParam @NotBlank String password,
-                                              @RequestParam @NotBlank String newPassword,
-                                              @RequestParam @NotBlank String newRepeatPassword) {
+                                               @RequestParam @NotBlank String password,
+                                               @RequestParam @NotBlank String newPassword,
+                                               @RequestParam @NotBlank String newRepeatPassword) {
 
         userService.changePassword(email, password, newPassword, newRepeatPassword);
         return ResponseEntity.ok().build();
@@ -109,5 +120,12 @@ public class AccountController {
     public ResponseEntity<List<UserResponseDto>> search(@RequestBody @Valid FilterSearchUser.Search text) {
         List<UserResponseDto> userResponseDtoList = userService.search(text);
         return ResponseEntity.ok(userResponseDtoList);
+    }
+
+    @PostMapping("/logout")
+    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
+    public ResponseEntity<Void> logout() {
+        userService.logout();
+        return ResponseEntity.ok().build();
     }
 }

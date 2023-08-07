@@ -14,12 +14,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,7 +42,11 @@ public class SpringSecurityConfig {
                         Path.PRODUCTS + Path.FILTER,
                         Path.PRODUCTS + Path.SEARCH)
                 .permitAll()
-                .and();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new JwtAuthEntryPoint())
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
