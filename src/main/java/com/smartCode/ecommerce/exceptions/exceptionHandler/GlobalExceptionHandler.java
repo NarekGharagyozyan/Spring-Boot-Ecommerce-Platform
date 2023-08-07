@@ -41,11 +41,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, e.getMessage(), req.getRequestURI());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ApiError> runtimeException(HttpServletRequest req, RuntimeException e) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), req.getRequestURI());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseEntity<ApiError> runtimeException(HttpServletRequest req, RuntimeException e) {
+//        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), req.getRequestURI());
+//    }
 
     private ResponseEntity<ApiError> buildResponse(HttpStatus httpStatus, String message, String uri) {
         var errors = new HashMap<String, String>();

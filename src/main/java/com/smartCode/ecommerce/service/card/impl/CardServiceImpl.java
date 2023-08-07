@@ -1,7 +1,7 @@
 package com.smartCode.ecommerce.service.card.impl;
 
-import com.smartCode.ecommerce.exceptions.DuplicationException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
+import com.smartCode.ecommerce.feign.CardFeignClient;
 import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.service.card.CardService;
@@ -20,22 +20,25 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
+    private final CardFeignClient cardFeignClient;
+
     @Async
     @Override
     @Transactional
     public void deleteByCardId(Integer cardId) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete(String.format("http://localhost:8081/cards/delete/%d",cardId));
+        restTemplate.delete(String.format("http://localhost:8081/cards/delete/%d", cardId));
     }
+
     @Async
     @Override
     @Transactional
     public void deleteAllByOwnerId(Integer userId) {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete(String.format("http://localhost:8081/cards/delete/owner/%d",userId));
+        restTemplate.delete(String.format("http://localhost:8081/cards/delete/owner/%d", userId));
     }
 
-    @Async
+//    @Async
     @Override
     @Transactional
     public CardResponseDto create(CardRequestDto cardRequestDto) {
@@ -45,19 +48,12 @@ public class CardServiceImpl implements CardService {
         if (length != 16) {
             throw new ValidationException(Message.CARD_NOT_FOUND);
         }
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForEntity(
-                "http://localhost:8081/cards/create",
-                cardRequestDto,
-                CardResponseDto.class).getBody();
+        return cardFeignClient.createCard(cardRequestDto).getBody();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<CardResponseDto> findByUserId(Integer userId) {
-        RestTemplate restTemplate = new RestTemplate();
-        return List.of(Objects.requireNonNull(restTemplate.getForEntity(
-                String.format("http://localhost:8081/cards/find/%d", userId),
-                CardResponseDto[].class).getBody()));
+        return cardFeignClient.findByOwnerId(userId).getBody();
     }
 }
