@@ -4,6 +4,7 @@ public interface Path {
     String USERS = "/users";
     String PRODUCTS = "/products";
     String CARDS = "/cards";
+    String NOTIFY = "/notify";
     String LOGIN = "/login";
     String REGISTER = "/register";
     String FIND = "/find/{id}";

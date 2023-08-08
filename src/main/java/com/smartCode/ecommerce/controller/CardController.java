@@ -35,7 +35,7 @@ public class CardController {
 
     @PostMapping(Path.CREATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<CardResponseDto> createCard(@RequestBody @Valid CardRequestDto cardRequestDto) {
+    public ResponseEntity<CardResponseDto> createCard(@RequestBody CardRequestDto cardRequestDto) {
         CardResponseDto cardResponseDto = cardService.create(cardRequestDto);
         return ResponseEntity.ok(cardResponseDto);
     }
@@ -43,7 +43,7 @@ public class CardController {
     @GetMapping(Path.FIND_WITH_OWNER_ID)
     @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
     public ResponseEntity<List<CardResponseDto>> findByUserId(@PathVariable @Positive Integer ownerId) {
-        List<CardResponseDto> byUserId = cardService.findByUserId(ownerId);
+        List<CardResponseDto> byUserId = cardService.findByOwnerId(ownerId);
         return ResponseEntity.ok(byUserId);
     }
 
