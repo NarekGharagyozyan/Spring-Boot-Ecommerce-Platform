@@ -90,7 +90,6 @@ public class AccountController {
     }
 
     @PostMapping(Path.VERIFY)
-    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> verifyUser(@RequestParam @Email String email,
                                               @RequestParam @Size(min = 6, max = 6) String code) {
         userService.verify(email, code);

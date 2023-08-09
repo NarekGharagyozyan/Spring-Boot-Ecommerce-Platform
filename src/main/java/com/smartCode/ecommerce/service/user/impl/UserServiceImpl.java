@@ -4,7 +4,11 @@ import com.smartCode.ecommerce.exceptions.DuplicationException;
 import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
+import com.smartCode.ecommerce.feign.CardFeignClient;
+import com.smartCode.ecommerce.feign.NotificationFeignClient;
 import com.smartCode.ecommerce.mapper.UserMapper;
+import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
+import com.smartCode.ecommerce.model.dto.notification.NotificationRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
@@ -15,6 +19,7 @@ import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.repository.UserRepository;
 import com.smartCode.ecommerce.service.email.EmailService;
+import com.smartCode.ecommerce.service.notification.impl.NotificationServiceImpl;
 import com.smartCode.ecommerce.service.token.AccessTokenService;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.codeGenerator.RandomGenerator;
@@ -57,6 +62,9 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
     AccessTokenService tokenService;
+    CardFeignClient cardFeignClient;
+    NotificationFeignClient notificationFeignClient;
+    NotificationServiceImpl notificationService;
 
     @Override
     @Transactional
@@ -71,17 +79,26 @@ public class UserServiceImpl implements UserService {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
+        UserEntity userEntity = setPropertiesAndSendEmail(user);
+        return userMapper.toResponseDto(userEntity);
+    }
+
+    private UserEntity setPropertiesAndSendEmail(UserRequestDto user) {
         UserEntity entity = userMapper.toEntity(user);
+
         String generatedCode = RandomGenerator.generateNumericString(6);
         entity.setCode(generatedCode);
         setUserAge(entity);
         entity.setPassword(passwordEncoder.encode(user.getPassword()));
         entity.setRole(roleRepository.findByRole(Role.ROLE_USER));
-        UserEntity save = userRepository.save(entity);
-        emailService.sendSimpleMessage(user.getEmail(), Message.EMAIL_SUBJECT,
-                Message.EMAIL_MESSAGE + generatedCode);
-        return userMapper.toResponseDto(save);
+        UserEntity userEntity = userRepository.save(entity);
+
+        notificationService.createForRegistration(generatedCode, userEntity.getId());
+
+        return userEntity;
     }
+
+
 
     @Override
     @Transactional
@@ -127,12 +144,14 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
         UserResponseDto responseDto = userMapper.toResponseDto(userEntity);
 
-        RestTemplate restTemplate = new RestTemplate();
+        /*RestTemplate restTemplate = new RestTemplate();
         var responseEntity = restTemplate.getForEntity(
                 String.format("http://localhost:8081/cards/find/%d", id),
                 List.class);
 
-        var cardResponseDto = responseEntity.getBody();
+        var cardResponseDto = responseEntity.getBody();*/
+        
+        List<CardResponseDto> cardResponseDto = cardFeignClient.findByOwnerId(id).getBody();
         responseDto.setCards(cardResponseDto);
         return responseDto;
     }
@@ -145,12 +164,14 @@ public class UserServiceImpl implements UserService {
         for (UserEntity userEntity : all) {
             UserResponseDto responseDto = userMapper.toResponseDto(userEntity);
 
-            RestTemplate restTemplate = new RestTemplate();
+            /*RestTemplate restTemplate = new RestTemplate();
             var responseEntity = restTemplate.getForEntity(
                     String.format("http://localhost:8081/cards/find/%d", responseDto.getId()),
                     List.class);
 
-            var cardResponseDto = responseEntity.getBody();
+            var cardResponseDto = responseEntity.getBody();*/
+
+            List<CardResponseDto> cardResponseDto = cardFeignClient.findByOwnerId(responseDto.getId()).getBody();
             responseDto.setCards(cardResponseDto);
             responseDtos.add(responseDto);
         }
@@ -165,10 +186,12 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
         userRepository.delete(userEntity);
 
-        RestTemplate restTemplate = new RestTemplate();
+        /*RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.delete(
-                String.format("http://localhost:8081/cards/delete/owner/%d", id));
+                String.format("http://localhost:8081/cards/delete/owner/%d", id));*/
+        
+        cardFeignClient.deleteAllByOwnerId(id).getBody();
     }
 
     @Override

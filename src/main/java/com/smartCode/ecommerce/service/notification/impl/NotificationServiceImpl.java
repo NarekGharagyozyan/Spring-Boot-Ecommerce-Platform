@@ -31,10 +31,24 @@ public class NotificationServiceImpl implements NotificationService {
         UserEntity userEntity = userRepository.findById(CurrentUser.getId()).orElseThrow(() -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
 
         notificationRequestDto.setCreateDate(System.currentTimeMillis());
-        notificationRequestDto.setSent(false);
         notificationRequestDto.setEmail(userEntity.getEmail());
         notificationRequestDto.setUserId(CurrentUser.getId());
         return notificationFeignClient.create(notificationRequestDto).getBody();
+    }
+
+    @Override
+    @Transactional
+    public NotificationResponseDto createForRegistration(String generatedCode, Integer id) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
+
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+
+        notificationRequestDto.setTitle(Message.EMAIL_SUBJECT);
+        notificationRequestDto.setContent(Message.EMAIL_MESSAGE + generatedCode);
+        notificationRequestDto.setEmail(userEntity.getEmail());
+        notificationRequestDto.setUserId(userEntity.getId());
+
+        return notificationFeignClient.sendVerificationCode(notificationRequestDto).getBody();
     }
 
     @Override

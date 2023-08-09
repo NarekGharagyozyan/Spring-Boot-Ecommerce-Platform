@@ -41,6 +41,7 @@ public class SpringSecurityConfig {
                         Path.USERS + Path.LOGIN,
                         Path.USERS + Path.FILTER,
                         Path.USERS + Path.SEARCH,
+                        Path.USERS + Path.VERIFY,
                         Path.PRODUCTS + Path.FIND,
                         Path.PRODUCTS + Path.FIND_ALL,
                         Path.PRODUCTS + Path.FILTER,

@@ -24,7 +24,6 @@ public class NotificationRequestDto {
     @NotBlank
     String content;
 
-    @NotBlank
     String description;
 
     @NotNull
@@ -32,7 +31,7 @@ public class NotificationRequestDto {
 
     Long createDate;
 
-    Boolean sent;
+    Boolean sent = false;
 
     String email;
 

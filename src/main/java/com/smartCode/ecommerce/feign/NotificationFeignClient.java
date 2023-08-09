@@ -25,4 +25,7 @@ public interface NotificationFeignClient {
 
     @GetMapping("/waiting")
     ResponseEntity<List<NotificationResponseDto>> getWaiting(@RequestParam Integer userId);
+
+    @PostMapping("/verify")
+    ResponseEntity<NotificationResponseDto> sendVerificationCode(@RequestBody NotificationRequestDto notificationRequestDto);
 }
