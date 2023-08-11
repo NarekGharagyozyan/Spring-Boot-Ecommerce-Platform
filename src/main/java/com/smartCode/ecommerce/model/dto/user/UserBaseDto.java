@@ -1,6 +1,5 @@
 package com.smartCode.ecommerce.model.dto.user;
 
-import com.smartCode.ecommerce.util.constants.Gender;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

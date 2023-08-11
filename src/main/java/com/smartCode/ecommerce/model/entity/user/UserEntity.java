@@ -62,7 +62,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
     Boolean isVerified = false;
 
-    String middleName;
+    String midName;
 
     @Enumerated(EnumType.STRING)
     Gender gender;

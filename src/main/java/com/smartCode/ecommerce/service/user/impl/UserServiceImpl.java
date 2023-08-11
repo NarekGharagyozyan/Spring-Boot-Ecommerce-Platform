@@ -8,7 +8,6 @@ import com.smartCode.ecommerce.feign.CardFeignClient;
 import com.smartCode.ecommerce.feign.NotificationFeignClient;
 import com.smartCode.ecommerce.mapper.UserMapper;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
-import com.smartCode.ecommerce.model.dto.notification.NotificationRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
@@ -27,6 +26,7 @@ import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Role;
 import com.smartCode.ecommerce.util.constants.Root;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
+import com.smartCode.ecommerce.util.event.publisher.CustomEventPublisher;
 import com.smartCode.ecommerce.util.jwt.JwtTokenProvider;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.criteria.Predicate;
 import java.time.Year;
@@ -63,8 +62,10 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
     AccessTokenService tokenService;
     CardFeignClient cardFeignClient;
-    NotificationFeignClient notificationFeignClient;
-    NotificationServiceImpl notificationService;
+//    NotificationFeignClient notificationFeignClient;
+//    NotificationServiceImpl notificationService;
+    CustomEventPublisher customEventPublisher;
+
 
     @Override
     @Transactional
@@ -79,31 +80,29 @@ public class UserServiceImpl implements UserService {
             throw new DuplicationException(Message.USER_WITH_PHONE_ALREADY_EXISTS);
         }
 
-        UserEntity userEntity = setPropertiesAndSendEmail(user);
+        String generatedCode = RandomGenerator.generateNumericString(6);
+        UserEntity userEntity = setProperties(user, generatedCode);
+        userEntity = userRepository.save(userEntity);
+
+        customEventPublisher.publishRegistrationEvent(userEntity);
+
         return userMapper.toResponseDto(userEntity);
     }
 
-    private UserEntity setPropertiesAndSendEmail(UserRequestDto user) {
-        UserEntity entity = userMapper.toEntity(user);
 
-        String generatedCode = RandomGenerator.generateNumericString(6);
+    private UserEntity setProperties(UserRequestDto user, String generatedCode) {
+        UserEntity entity = userMapper.toEntity(user);
         entity.setCode(generatedCode);
         setUserAge(entity);
         entity.setPassword(passwordEncoder.encode(user.getPassword()));
         entity.setRole(roleRepository.findByRole(Role.ROLE_USER));
-        UserEntity userEntity = userRepository.save(entity);
-
-        notificationService.createForRegistration(generatedCode, userEntity.getId());
-
-        return userEntity;
+        return entity;
     }
-
-
 
     @Override
     @Transactional
-    public void logout() {
-        tokenService.deleteToken(CurrentUser.getId());
+    public void logout(String token) {
+        tokenService.deleteToken(CurrentUser.getId(), token.split("\\.")[2]);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class UserServiceImpl implements UserService {
                 List.class);
 
         var cardResponseDto = responseEntity.getBody();*/
-        
+
         List<CardResponseDto> cardResponseDto = cardFeignClient.findByOwnerId(id).getBody();
         responseDto.setCards(cardResponseDto);
         return responseDto;
@@ -190,7 +189,7 @@ public class UserServiceImpl implements UserService {
 
         restTemplate.delete(
                 String.format("http://localhost:8081/cards/delete/owner/%d", id));*/
-        
+
         cardFeignClient.deleteAllByOwnerId(id).getBody();
     }
 
@@ -205,14 +204,11 @@ public class UserServiceImpl implements UserService {
                 if (passwordEncoder.matches(password, user.getPassword())) {
                     user.setPassword(passwordEncoder.encode(newPassword));
                     userRepository.save(user);
-                }
-                else
+                } else
                     throw new ValidationException(Message.WRONG_USERNAME_OR_PASSWORD);
-            }
-            else
+            } else
                 throw new ResourceNotFoundException(Message.USER_NOT_FOUND);
-        }
-        else
+        } else
             throw new ValidationException(Message.PASSWORDS_NOT_MATCHES);
     }
 

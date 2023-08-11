@@ -29,7 +29,7 @@ public class InitConfig {
     @PostConstruct
     @Transactional
     public void setupBb() {
-        createRoles();
+//        createRoles();
         createAdmin();
     }
 
@@ -50,18 +50,18 @@ public class InitConfig {
         }
     }
 
-    private void createRoles() {
-        if (!roleRepository.existsByRole(Role.ROLE_ADMIN)){
-            var admin = new RoleEntity();
-            admin.setRole(Role.ROLE_ADMIN);
-            roleRepository.save(admin);
-        }
-
-        if (!roleRepository.existsByRole(Role.ROLE_USER)) {
-            var user = new RoleEntity();
-            user.setRole(Role.ROLE_USER);
-            roleRepository.save(user);
-        }
-    }
+//    private void createRoles() {
+//        if (!roleRepository.existsByRole(Role.ROLE_ADMIN)){
+//            var admin = new RoleEntity();
+//            admin.setRole(Role.ROLE_ADMIN);
+//            roleRepository.save(admin);
+//        }
+//
+//        if (!roleRepository.existsByRole(Role.ROLE_USER)) {
+//            var user = new RoleEntity();
+//            user.setRole(Role.ROLE_USER);
+//            roleRepository.save(user);
+//        }
+//    }
 
 }

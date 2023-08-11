@@ -1,28 +1,30 @@
 package com.smartCode.ecommerce.model.dto.user;
 
 import com.smartCode.ecommerce.util.constants.Gender;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Setter
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserRequestDto extends UserBaseDto{
+public class UserRequestDto extends UserBaseDto {
 
-    String name;
+    @NotBlank
+    private String name;
 
-    String lastName;
+    @NotBlank
+    private String lastName;
 
-    LocalDate date;
+    private LocalDate date;
 
-    String middleName;
+    private String middleName;
 
-    Gender gender;
+    @NotNull
+    private Gender gender;
 
-    String password;
+    private String password;
 
 }

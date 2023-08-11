@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,9 +55,8 @@ public class AccountController {
     }
 
     @PostMapping(Path.LOGOUT)
-    @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<Void> logout() {
-        userService.logout();
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String token) {
+        userService.logout(token);
         return ResponseEntity.ok().build();
     }
 
@@ -91,7 +91,7 @@ public class AccountController {
 
     @PostMapping(Path.VERIFY)
     public ResponseEntity<Void> verifyUser(@RequestParam @Email String email,
-                                              @RequestParam @Size(min = 6, max = 6) String code) {
+                                           @RequestParam @Size(min = 6, max = 6) String code) {
         userService.verify(email, code);
         return ResponseEntity.ok().build();
     }
@@ -99,8 +99,8 @@ public class AccountController {
     @PostMapping(Path.CHANGE_PASSWORD)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<Void> changePassword(@RequestParam @NotBlank String password,
-                                              @RequestParam @NotBlank String newPassword,
-                                              @RequestParam @NotBlank String newRepeatPassword) {
+                                               @RequestParam @NotBlank String newPassword,
+                                               @RequestParam @NotBlank String newRepeatPassword) {
 
         userService.changePassword(password, newPassword, newRepeatPassword);
         return ResponseEntity.ok().build();

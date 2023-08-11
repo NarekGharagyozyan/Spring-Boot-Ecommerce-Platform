@@ -21,8 +21,8 @@ public class AccessTokenServiceImpl implements AccessTokenService {
     @Override
     @Transactional
     @CacheEvict(value = "token", allEntries = true)
-    public void deleteToken(Integer userId) {
-        tokenRepository.deleteTokenEntityByUserId(userId);
+    public void deleteToken(Integer userId,String token) {
+        tokenRepository.deleteTokenEntityByUserIdAndToken(userId,token);
     }
 
     @Override

@@ -8,7 +8,7 @@ public interface AccessTokenService {
 
     void saveToken(AccessTokenEntity tokenEntity);
 
-    void deleteToken(Integer userId);
+    void deleteToken(Integer userId, String token);
 
     AccessTokenEntity getToken(String token);
 }

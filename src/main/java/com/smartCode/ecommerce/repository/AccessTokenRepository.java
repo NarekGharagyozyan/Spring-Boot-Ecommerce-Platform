@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 public interface AccessTokenRepository extends JpaRepository<AccessTokenEntity, Integer> {
 
     AccessTokenEntity findTokenEntityByToken(String token);
+
     void deleteTokenEntityByUserId(Integer userId);
+
+    void deleteTokenEntityByUserIdAndToken(Integer userId, String token);
 }

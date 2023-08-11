@@ -32,6 +32,7 @@ public class CardServiceImpl implements CardService {
         restTemplate.delete(String.format("http://localhost:8081/cards/delete/%d",cardId));*/
         cardFeignClient.deleteByCardId(cardId);
     }
+
     @Async
     @Override
     @Transactional
