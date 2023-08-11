@@ -7,13 +7,13 @@ import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.service.card.CardService;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
+import com.smartCode.ecommerce.util.event.publisher.card.CardCreationEventPublisher;
+import com.smartCode.ecommerce.util.event.publisher.card.CardDeleteEventPublisher;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -23,16 +23,17 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
 
     CardFeignClient cardFeignClient;
+    CardCreationEventPublisher cardCreationEventPublisher;
+    CardDeleteEventPublisher cardDeleteEventPublisher;
 
-    @Async
     @Override
     @Transactional
     public void deleteByCardId(Integer cardId) {
         /*RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete(String.format("http://localhost:8081/cards/delete/%d",cardId));*/
         cardFeignClient.deleteByCardId(cardId);
+        cardDeleteEventPublisher.publishCardDeleteEvent();
     }
-    @Async
     @Override
     @Transactional
     public void deleteAllByOwnerId(Integer userId) {
@@ -56,6 +57,10 @@ public class CardServiceImpl implements CardService {
                 "http://localhost:8081/cards/create",
                 cardRequestDto,
                 CardResponseDto.class).getBody();*/
+
+
+        cardCreationEventPublisher.publishCardCreationEvent(cardRequestDto);
+
         return cardFeignClient.createCard(cardRequestDto).getBody();
     }
 

@@ -5,6 +5,7 @@ import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,9 +25,10 @@ public interface UserService {
 
     List<UserResponseDto> search(FilterSearchUser.Search text);
 
+    void logout(String token);
+
     UserAuthDto login(String username, String password);
 
-    void logout();
 
     void changePassword(String password, String newPassword ,String repeatPassword);
 }

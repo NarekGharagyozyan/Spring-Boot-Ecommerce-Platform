@@ -21,4 +21,7 @@ public interface Path {
     String DELETE_WITH_OWNER_ID = "/delete/owner/{ownerId}";
     String DELETE_WITH_CARD_ID = "/delete/{cardId}";
     String LOGOUT = "/logout";
+    String READY = "/ready";
+    String WAITING = "/waiting";
+    String SAVE = "/save";
 }

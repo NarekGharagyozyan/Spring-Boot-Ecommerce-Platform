@@ -11,6 +11,8 @@ import com.smartCode.ecommerce.repository.ProductRepository;
 import com.smartCode.ecommerce.service.product.ProductService;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Root;
+import com.smartCode.ecommerce.util.event.publisher.product.ProductCreationEventPublisher;
+import com.smartCode.ecommerce.util.event.publisher.product.ProductDeleteEventPublisher;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -33,13 +35,16 @@ public class ProductServiceImpl implements ProductService {
 
     ProductRepository productRepository;
     ProductMapper productMapper;
+    ProductCreationEventPublisher productCreationEventPublisher;
+    ProductDeleteEventPublisher productDeleteEventPublisher;
 
-    @Async
     @Override
     @Transactional
     public ProductResponseDto create(ProductEntity productEntity) {
         setProductDeadline(productEntity);
-        return productMapper.toResponseDto(productRepository.save(productEntity));
+        ProductEntity save = productRepository.save(productEntity);
+        productCreationEventPublisher.publishProductCreationEvent();
+        return productMapper.toResponseDto(save);
     }
 
     @Override
@@ -134,11 +139,11 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDtoList(productRepository.findAll(specification));
     }
 
-    @Async
     @Override
     @Transactional
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
+        productDeleteEventPublisher.publishProductDeleteEvent();
     }
 
     private static void setProductDeadline(ProductEntity productEntity) {

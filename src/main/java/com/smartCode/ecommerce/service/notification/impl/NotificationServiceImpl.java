@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,17 +39,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional
-    public NotificationResponseDto createForRegistration(String generatedCode, Integer id) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(Message.USER_NOT_FOUND));
-
+    public void createForRegistration(String code, Integer userId, String email) {
         NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-
         notificationRequestDto.setTitle(Message.EMAIL_SUBJECT);
-        notificationRequestDto.setContent(Message.EMAIL_MESSAGE + generatedCode);
-        notificationRequestDto.setEmail(userEntity.getEmail());
-        notificationRequestDto.setUserId(userEntity.getId());
+        notificationRequestDto.setContent(Message.EMAIL_MESSAGE + code);
+        notificationRequestDto.setEmail(email);
+        notificationRequestDto.setUserId(userId);
 
-        return notificationFeignClient.sendVerificationCode(notificationRequestDto).getBody();
+        notificationFeignClient.sendVerificationCode(notificationRequestDto);
     }
 
     @Override

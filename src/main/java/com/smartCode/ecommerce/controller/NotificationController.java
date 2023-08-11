@@ -29,21 +29,21 @@ public class NotificationController {
 
     NotificationService notificationService;
 
-    @PostMapping("/create")
+    @PostMapping(Path.CREATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<NotificationResponseDto> create(@RequestBody @Valid NotificationRequestDto notificationRequestDto) {
         NotificationResponseDto notificationResponseDto = notificationService.create(notificationRequestDto);
         return ResponseEntity.ok(notificationResponseDto);
     }
 
-    @GetMapping("/ready")
+    @GetMapping(Path.READY)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<List<NotificationResponseDto>> getReady() {
         List<NotificationResponseDto> readyNotifications = notificationService.getReady();
         return ResponseEntity.ok(readyNotifications);
     }
 
-    @GetMapping("/waiting")
+    @GetMapping(Path.WAITING)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<List<NotificationResponseDto>> getWaiting() {
         List<NotificationResponseDto> readyNotifications = notificationService.getWaiting();
