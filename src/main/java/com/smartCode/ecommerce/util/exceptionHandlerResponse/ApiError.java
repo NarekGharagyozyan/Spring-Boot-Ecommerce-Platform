@@ -9,12 +9,11 @@ import java.util.Map;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ApiError {
 
-    Integer status;
-    String path;
-    Map<String, String> errors;
+    private Integer status;
+    private String path;
+    private Map<String, String> errors;
 
     public ApiError(Integer status, String path, Map<String, String> errors) {
         super();

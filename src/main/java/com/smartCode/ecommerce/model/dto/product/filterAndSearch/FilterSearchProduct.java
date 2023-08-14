@@ -8,12 +8,11 @@ import lombok.experimental.FieldDefaults;
 public class FilterSearchProduct {
     @Getter
     @Setter
-    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class Filter {
-        Integer startCount;
-        Integer endCount;
-        Double startPrice;
-        Double endPrice;
+        private Integer startCount;
+        private Integer endCount;
+        private Double startPrice;
+        private Double endPrice;
     }
 
     @Setter

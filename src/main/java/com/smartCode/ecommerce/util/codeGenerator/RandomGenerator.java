@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RandomGenerator {
 
-    static String NUMERIC = "0123456789";
-    static SecureRandom rnd = new SecureRandom();
+    private final static String NUMERIC = "0123456789";
+    private final static SecureRandom rnd = new SecureRandom();
 
     public static String generateNumericString(int length) {
         StringBuilder sb = new StringBuilder(length);

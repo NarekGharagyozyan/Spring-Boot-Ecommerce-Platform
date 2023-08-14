@@ -8,13 +8,12 @@ import org.springframework.context.ApplicationEvent;
 import java.time.LocalDateTime;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCreateEvent extends ApplicationEvent {
 
-    private String actionType;
-    private String entityType;
-    private LocalDateTime actionDate;
-    private Integer userId;
+    private final String actionType;
+    private final String entityType;
+    private final LocalDateTime actionDate;
+    private final Integer userId;
 
     public ProductCreateEvent(Object source, String actionType, String entityType, LocalDateTime actionDate, Integer userId) {
         super(source);

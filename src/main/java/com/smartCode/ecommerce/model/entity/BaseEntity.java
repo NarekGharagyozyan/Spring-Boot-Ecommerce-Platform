@@ -16,15 +16,14 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onRegister() {

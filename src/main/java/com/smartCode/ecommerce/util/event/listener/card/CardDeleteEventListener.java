@@ -11,10 +11,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CardDeleteEventListener {
 
-    ActionService actionService;
+    private final ActionService actionService;
 
     @Async
     @TransactionalEventListener

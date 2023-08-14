@@ -7,9 +7,8 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateDto extends UserBaseDto{
 
-    String password;
+    private String password;
 
 }

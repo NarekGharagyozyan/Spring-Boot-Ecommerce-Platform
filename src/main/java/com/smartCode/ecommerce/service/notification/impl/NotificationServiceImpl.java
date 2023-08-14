@@ -19,12 +19,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
-    NotificationFeignClient notificationFeignClient;
-    UserRepository userRepository;
+    private final NotificationFeignClient notificationFeignClient;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional

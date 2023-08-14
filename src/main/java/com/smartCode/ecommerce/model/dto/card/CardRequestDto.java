@@ -8,11 +8,10 @@ import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardRequestDto {
-        String cardName;
-        String ownerName;
-        String number;
-        String expDate;
-        Integer ownerId;
+        private String cardName;
+        private String ownerName;
+        private String number;
+        private String expDate;
+        private Integer ownerId;
 }

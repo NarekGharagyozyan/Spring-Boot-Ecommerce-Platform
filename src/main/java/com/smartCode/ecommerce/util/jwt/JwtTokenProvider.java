@@ -26,14 +26,13 @@ import java.util.List;
 @Slf4j
 @Component("jwtProvider")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JwtTokenProvider {
 
     @Value("${jwtSecret}")
-    String jwtSecret;
+    private String jwtSecret;
 
     @Value("${accessTokenExpirationMs}")
-    long accessTokenExpirationMs;
+    private long accessTokenExpirationMs;
 
     @PostConstruct
     protected void init() {

@@ -29,14 +29,13 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    ProductRepository productRepository;
-    ProductMapper productMapper;
-    ProductCreationEventPublisher productCreationEventPublisher;
-    ProductDeleteEventPublisher productDeleteEventPublisher;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+    private final ProductCreationEventPublisher productCreationEventPublisher;
+    private final ProductDeleteEventPublisher productDeleteEventPublisher;
 
     @Override
     @Transactional

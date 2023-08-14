@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Narek
+      changes:
+        - sqlFile:
+            path: classpath:/db/changelog/V1__initialization.sql
+
+  - changeSet:
+      id: 2
+      author: Narek
+      changes:
+        - loadData:
+            tableName: roles
+            file: roles.csv

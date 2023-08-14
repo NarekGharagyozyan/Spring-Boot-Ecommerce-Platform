@@ -27,11 +27,10 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.CARDS)
 public class CardController {
 
-    CardService cardService;
+    private final CardService cardService;
 
     @PostMapping(Path.CREATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")

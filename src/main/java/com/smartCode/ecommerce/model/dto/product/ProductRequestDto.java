@@ -10,10 +10,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductRequestDto extends ProductBaseDto{
 
     @NotNull
-    LocalDate productionDate;
+    private LocalDate productionDate;
 
 }

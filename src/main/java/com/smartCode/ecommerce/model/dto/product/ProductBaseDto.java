@@ -10,13 +10,12 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductBaseDto {
 
-    String name;
-    String company;
-    Double price;
-    String category;
-    int count;
+    private String name;
+    private String company;
+    private Double price;
+    private String category;
+    private int count;
 
 }

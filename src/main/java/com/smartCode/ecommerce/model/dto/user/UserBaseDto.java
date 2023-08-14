@@ -12,14 +12,13 @@ import javax.validation.constraints.Email;
 @MappedSuperclass
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserBaseDto {
 
-    String username;
+    private String username;
 
     @Email
-    String email;
+    private String email;
 
-    String phone;
+    private String phone;
 
 }

@@ -15,28 +15,27 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @Entity
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false)
-    String company;
+    private String company;
 
     @Column(nullable = false)
-    Double price;
+    private Double price;
 
     @Column(nullable = false)
-    String category;
+    private String category;
 
     @Column(nullable = false)
-    Integer count;
+    private Integer count;
 
     @Column(nullable = false)
-    LocalDate productionDate;
+    private LocalDate productionDate;
 
-    Boolean isInDeadline;
+    private Boolean isInDeadline;
 
 }

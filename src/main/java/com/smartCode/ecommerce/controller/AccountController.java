@@ -1,6 +1,8 @@
 package com.smartCode.ecommerce.controller;
 
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
+import com.smartCode.ecommerce.model.dto.user.UserChangePasswordDto;
+import com.smartCode.ecommerce.model.dto.user.UserLoginDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserUpdateDto;
@@ -36,11 +38,10 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.USERS)
 public class AccountController {
 
-    UserService userService;
+    private final UserService userService;
 
     @PostMapping(Path.REGISTER)
     public ResponseEntity<UserResponseDto> registration(@RequestBody @Valid UserRequestDto user) {
@@ -49,9 +50,8 @@ public class AccountController {
     }
 
     @PostMapping(Path.LOGIN)
-    public ResponseEntity<UserAuthDto> login(@RequestParam @NotBlank String username,
-                                             @RequestParam @NotBlank String password) {
-        return ResponseEntity.ok(userService.login(username, password));
+    public ResponseEntity<UserAuthDto> login(@RequestBody @Valid UserLoginDto userLoginDto) {
+        return ResponseEntity.ok(userService.login(userLoginDto.getUsername(), userLoginDto.getPassword()));
     }
 
     @PostMapping(Path.LOGOUT)
@@ -98,11 +98,11 @@ public class AccountController {
 
     @PostMapping(Path.CHANGE_PASSWORD)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
-    public ResponseEntity<Void> changePassword(@RequestParam @NotBlank String password,
-                                              @RequestParam @NotBlank String newPassword,
-                                              @RequestParam @NotBlank String newRepeatPassword) {
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid UserChangePasswordDto userChangePasswordDto) {
 
-        userService.changePassword(password, newPassword, newRepeatPassword);
+        userService.changePassword(userChangePasswordDto.getPassword(),
+                userChangePasswordDto.getChangePassword(),
+                userChangePasswordDto.getRepeatPassword());
         return ResponseEntity.ok().build();
     }
 

@@ -35,40 +35,40 @@ import java.util.List;
 public class UserEntity extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false)
-    String lastName;
+    private String lastName;
 
     @Column(nullable = false)
-    Integer age;
+    private Integer age;
 
     @Column(nullable = false)
-    LocalDate date;
+    private LocalDate date;
 
     @Column(nullable = false, unique = true)
-    String username;
+    private String username;
 
     @Column(nullable = false, unique = true)
-    String email;
+    private String email;
 
     @Column(nullable = false, unique = true)
-    String phone;
+    private String phone;
 
     @Column(nullable = false)
-    String password;
+    private String password;
 
-    String code;
+    private String code;
 
-    Boolean isVerified = false;
+    private Boolean isVerified = false;
 
-    String middleName;
+    private String middleName;
 
     @Enumerated(EnumType.STRING)
-    Gender gender;
+    private Gender gender;
 
     @ManyToOne(optional = false)
-    RoleEntity role;
+    private RoleEntity role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

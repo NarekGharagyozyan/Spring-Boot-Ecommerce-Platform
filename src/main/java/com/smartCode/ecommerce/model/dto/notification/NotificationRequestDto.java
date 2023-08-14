@@ -13,27 +13,26 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Validated
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationRequestDto {
 
     
-    Integer userId;
+    private Integer userId;
 
     @NotBlank
-    String title;
+    private String title;
 
     @NotBlank
-    String content;
+    private String content;
 
-    String description;
+    private String description;
 
     @NotNull
-    Long notificationDate;
+    private Long notificationDate;
 
-    Long createDate;
+    private Long createDate;
 
-    Boolean sent = false;
+    private Boolean sent = false;
 
-    String email;
+    private String email;
 
 }

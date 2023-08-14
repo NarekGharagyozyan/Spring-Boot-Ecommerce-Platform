@@ -12,10 +12,9 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RegistrationEventListener {
 
-    NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @Async
     @TransactionalEventListener

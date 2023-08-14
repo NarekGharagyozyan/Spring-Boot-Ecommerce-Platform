@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CardCreationEventPublisher {
 
-    ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public void publishCardCreationEvent(CardRequestDto cardRequestDto) {
         CardCreateEvent cardCreateEvent = new CardCreateEvent(

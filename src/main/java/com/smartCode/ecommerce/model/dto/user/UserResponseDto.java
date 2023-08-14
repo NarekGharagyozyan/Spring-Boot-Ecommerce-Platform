@@ -12,22 +12,21 @@ import java.util.List;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponseDto extends UserBaseDto{
 
-    Integer id;
+    private Integer id;
 
-    String name;
+    private String name;
 
-    String middleName;
+    private String middleName;
 
-    String lastName;
+    private String lastName;
 
-    LocalDate date;
+    private LocalDate date;
 
-    Integer age;
+    private Integer age;
 
-    Gender gender;
+    private Gender gender;
 
-    List<CardResponseDto> cards;
+    private List<CardResponseDto> cards;
 }

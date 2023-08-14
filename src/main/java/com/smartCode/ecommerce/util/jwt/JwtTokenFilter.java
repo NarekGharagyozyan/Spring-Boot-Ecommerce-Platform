@@ -27,12 +27,11 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    JwtTokenProvider jwtTokenProvider;
-    AccessTokenRepository tokenRepository;
-    AccessTokenService tokenService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AccessTokenRepository tokenRepository;
+    private final AccessTokenService tokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {

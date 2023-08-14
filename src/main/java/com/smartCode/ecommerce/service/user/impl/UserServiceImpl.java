@@ -46,19 +46,18 @@ import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    UserRepository userRepository;
-    UserMapper userMapper;
-    AuthenticationManager authenticationManager;
-    JwtTokenProvider jwtTokenProvider;
-    UserDetailsService userDetailsService;
-    PasswordEncoder passwordEncoder;
-    RoleRepository roleRepository;
-    AccessTokenService tokenService;
-    CardFeignClient cardFeignClient;
-    RegistrationEventPublisher registrationEventPublisher;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final AccessTokenService tokenService;
+    private final CardFeignClient cardFeignClient;
+    private final RegistrationEventPublisher registrationEventPublisher;
 
     @Override
     @Transactional

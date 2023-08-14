@@ -13,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccessTokenServiceImpl implements AccessTokenService {
 
-    AccessTokenRepository tokenRepository;
+    private final AccessTokenRepository tokenRepository;
 
     @Override
     @Transactional

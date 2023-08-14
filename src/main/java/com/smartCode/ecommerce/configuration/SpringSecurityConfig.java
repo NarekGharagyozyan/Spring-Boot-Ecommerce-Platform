@@ -20,12 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
-    UserDetailsService userDetailsService;
-    JwtTokenFilter jwtTokenFilter;
+    private final UserDetailsService userDetailsService;
+    private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

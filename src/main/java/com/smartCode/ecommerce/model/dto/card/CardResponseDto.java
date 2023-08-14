@@ -8,13 +8,12 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CardResponseDto{
 
-    Integer id;
-    String cardName;
-    String ownerName;
-    String number;
-    String expDate;
-    Integer ownerId;
+    private Integer id;
+    private String cardName;
+    private String ownerName;
+    private String number;
+    private String expDate;
+    private Integer ownerId;
 }

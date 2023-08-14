@@ -6,11 +6,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RegistrationEvent extends ApplicationEvent {
-    String code;
-    Integer userId;
-    String email;
+    private final String code;
+    private final Integer userId;
+    private final String email;
 
     public RegistrationEvent(Object source, String code, Integer userId, String email) {
         super(source);

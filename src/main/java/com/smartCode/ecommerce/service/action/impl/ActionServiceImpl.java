@@ -14,10 +14,9 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ActionServiceImpl implements ActionService {
 
-    ActionFeignClient actionFeignClient;
+    private final ActionFeignClient actionFeignClient;
     @Override
     @Transactional
     public void createAction(String actionType, String entityType, LocalDateTime actionDate, Integer userId) {

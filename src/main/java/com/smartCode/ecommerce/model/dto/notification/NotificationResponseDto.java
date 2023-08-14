@@ -11,21 +11,20 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NotificationResponseDto {
 
-    Integer id;
+    private Integer id;
 
-    Integer userId;
+    private Integer userId;
 
-    String title;
+    private String title;
 
-    String content;
+    private String content;
 
-    String description;
+    private String description;
 
-    Long notificationDate;
+    private Long notificationDate;
 
-    String email;
+    private String email;
 
 }

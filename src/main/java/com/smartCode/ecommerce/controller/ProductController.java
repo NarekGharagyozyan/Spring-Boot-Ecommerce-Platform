@@ -31,11 +31,10 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping(Path.PRODUCTS)
 public class ProductController {
 
-    ProductService productService;
+    private final ProductService productService;
 
     @GetMapping(Path.FIND)
     public ResponseEntity<ProductResponseDto> findProduct(@PathVariable @Positive Integer id) {

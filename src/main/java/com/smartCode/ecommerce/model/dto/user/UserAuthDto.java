@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class UserAuthDto {
 
-    Integer userId;
-    String accessToken;
+    private Integer userId;
+    private String accessToken;
 }

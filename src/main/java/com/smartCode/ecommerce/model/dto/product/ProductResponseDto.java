@@ -9,11 +9,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductResponseDto extends ProductBaseDto {
 
-    Integer id;
-    LocalDate productionDate;
-    Boolean isInDeadline;
+    private Integer id;
+    private LocalDate productionDate;
+    private Boolean isInDeadline;
 
 }

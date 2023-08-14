@@ -10,10 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RegistrationEventPublisher {
 
-    ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public void publishRegistrationEvent(UserEntity userEntity) {
         RegistrationEvent registrationEvent = new RegistrationEvent(

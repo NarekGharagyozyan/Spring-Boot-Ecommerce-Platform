@@ -12,7 +12,6 @@ public class FilterSearchUser {
         private Integer endAge;
         private Boolean isVerified;
         private Gender gender;
-        //private String productName;
     }
 
     @Setter

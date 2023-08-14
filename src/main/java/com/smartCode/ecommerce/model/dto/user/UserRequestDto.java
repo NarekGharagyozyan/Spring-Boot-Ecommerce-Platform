@@ -12,24 +12,23 @@ import java.time.LocalDate;
 
 @Setter
 @Getter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRequestDto extends UserBaseDto{
 
     @NotBlank
-    String name;
+    private String name;
 
     @NotBlank
-    String lastName;
+    private String lastName;
 
     @NotNull
-    LocalDate date;
+    private LocalDate date;
 
-    String middleName;
+    private String middleName;
 
     @NotNull
-    Gender gender;
+    private Gender gender;
 
     @NotBlank
-    String password;
+    private String password;
 
 }

@@ -14,13 +14,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserDetailsImpl implements UserDetails {
 
-    Integer id;
-    String username;
-    String password;
-    Collection<? extends GrantedAuthority> authorities;
+    private Integer id;
+    private String username;
+    private String password;
+    private Collection<? extends GrantedAuthority> authorities;
 
     private UserDetailsImpl(Integer id, String username,
                             String password, Collection<? extends GrantedAuthority> authorities) {

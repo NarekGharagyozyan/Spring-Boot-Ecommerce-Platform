@@ -19,17 +19,16 @@ import javax.persistence.Table;
 @Setter
 @Getter
 @Entity
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "access_token")
 public class AccessTokenEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     @ManyToOne(optional = false)
-    UserEntity user;
+    private UserEntity user;
 
     @Column(unique = true, nullable = false)
-    String token;
+    private String token;
 }

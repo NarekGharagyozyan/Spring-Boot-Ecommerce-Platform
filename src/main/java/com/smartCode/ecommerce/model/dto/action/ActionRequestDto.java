@@ -8,17 +8,16 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
 public class ActionRequestDto {
 
-    String actionType;
+    private String actionType;
 
-    String entityType;
+    private String entityType;
 
-    LocalDateTime actionDate;
+    private LocalDateTime actionDate;
 
-    Integer userId;
+    private Integer userId;
 
 }

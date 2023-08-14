@@ -18,13 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
-    CardFeignClient cardFeignClient;
-    CardCreationEventPublisher cardCreationEventPublisher;
-    CardDeleteEventPublisher cardDeleteEventPublisher;
+    private final CardFeignClient cardFeignClient;
+    private final CardCreationEventPublisher cardCreationEventPublisher;
+    private final CardDeleteEventPublisher cardDeleteEventPublisher;
 
     @Override
     @Transactional

@@ -18,14 +18,13 @@ import javax.persistence.Table;
 @Setter
 @Getter
 @Entity
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "roles")
 public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    Role role;
+    private Role role;
 }
