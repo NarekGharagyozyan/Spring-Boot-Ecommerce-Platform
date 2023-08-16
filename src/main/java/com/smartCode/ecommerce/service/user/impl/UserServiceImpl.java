@@ -6,6 +6,7 @@ import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.exceptions.VerificationException;
 import com.smartCode.ecommerce.feign.CardFeignClient;
 import com.smartCode.ecommerce.mapper.UserMapper;
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.model.dto.user.UserAuthDto;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
@@ -32,6 +33,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -115,15 +118,19 @@ public class UserServiceImpl implements UserService {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password));
-        UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(username);
+        UserDetailsImpl user = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+
         Integer userId = user.getId();
-        String accessToken = jwtTokenProvider.generateAccessToken(userId, user.getUsername(), user.getRole().getRole().getName());
+        List<String> roles = getRoles(user);
+        String role = roles.get(0);
+
+        String accessToken = jwtTokenProvider.generateAccessToken(userId, user.getUsername(), role);
 
         String token = accessToken.split("\\.")[2];
         System.out.println(token);
         AccessTokenEntity tokenEntity = new AccessTokenEntity();
         tokenEntity.setToken(token);
-        tokenEntity.setUser(user);
+        tokenEntity.setUser(userRepository.findById(userId).get());
         tokenService.saveToken(tokenEntity);
 
         return new UserAuthDto(userId, accessToken);
@@ -306,5 +313,8 @@ public class UserServiceImpl implements UserService {
         user.setAge(age);
     }
 
+    private List<String> getRoles(UserDetails user) {
+        return user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    }
 
 }

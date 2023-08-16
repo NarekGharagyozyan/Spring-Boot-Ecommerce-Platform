@@ -1,5 +1,7 @@
 package com.smartCode.ecommerce.service.user.impl;
 
+import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
+import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import com.smartCode.ecommerce.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +20,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsernameOrEmailOrPhone(username, username, username);
+    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUsernameOrEmailOrPhone(username, username, username);
+        return UserDetailsImpl.build(userEntity.getId(),
+                                userEntity.getUsername(),
+                                userEntity.getRole().getRole().getName());
     }
 
 }

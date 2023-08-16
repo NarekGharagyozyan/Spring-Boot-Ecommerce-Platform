@@ -32,7 +32,7 @@ import java.util.List;
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "users")
-public class UserEntity extends BaseEntity implements UserDetails {
+public class UserEntity extends BaseEntity{
 
     @Column(nullable = false)
     private String name;
@@ -70,28 +70,5 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @ManyToOne(optional = false)
     private RoleEntity role;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getRole().getName()));
-    }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }
