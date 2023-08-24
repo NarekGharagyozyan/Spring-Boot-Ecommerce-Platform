@@ -8,9 +8,12 @@ import com.smartCode.ecommerce.model.entity.product.ProductEntity;
 import com.smartCode.ecommerce.service.product.ProductService;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
+import com.smartCode.ecommerce.util.page.CustomPageRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -43,9 +47,12 @@ public class ProductController {
     }
 
     @GetMapping(Path.FIND_ALL)
-    public ResponseEntity<List<ProductResponseDto>> findAllProducts() {
-        List<ProductResponseDto> products = productService.findAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<Page<ProductResponseDto>> findAllProducts(@RequestParam(required = false) Integer page,
+                                                                    @RequestParam(required = false) Integer size,
+                                                                    @RequestParam(name = "sort", defaultValue = "id") String sort,
+                                                                    @RequestParam(required = false, defaultValue = "ASC") Sort.Direction direction) {
+        var pageRequest = CustomPageRequest.from(page, size, Sort.by(direction, sort, "id"));
+        return ResponseEntity.ok(productService.findAllProducts(pageRequest));
     }
 
     @PostMapping(Path.CREATE)

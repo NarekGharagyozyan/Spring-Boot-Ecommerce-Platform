@@ -1,8 +1,6 @@
 package com.smartCode.ecommerce.feign;
 
-import com.smartCode.ecommerce.configuration.CardFeignConfig;
-import com.smartCode.ecommerce.configuration.NotificationFeignConfig;
-import com.smartCode.ecommerce.model.dto.action.ActionRequestDto;
+import com.smartCode.ecommerce.configuration.feign.CardFeignConfig;
 import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
 import com.smartCode.ecommerce.util.constants.Path;

@@ -12,23 +12,13 @@ import java.util.List;
 public interface UserService {
     UserResponseDto register(UserRequestDto user);
     UserResponseDto getById(Integer id);
-
     List<UserResponseDto> getAllUsers();
-
     UserResponseDto update(Integer id, UserUpdateDto userUpdateDto);
-
     void delete(Integer id);
-
     void verify(String email, String code);
-
     List<UserResponseDto> filter(FilterSearchUser.Filter userFilter);
-
     List<UserResponseDto> search(FilterSearchUser.Search text);
-
     void logout(String token);
-
     UserAuthDto login(String username, String password);
-
-
     void changePassword(String password, String newPassword ,String repeatPassword);
 }

@@ -1,4 +1,4 @@
-package com.smartCode.ecommerce.configuration;
+package com.smartCode.ecommerce.configuration.springSecurity;
 
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.jwt.JwtTokenFilter;
@@ -27,6 +27,11 @@ public class SpringSecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.httpBasic().disable()
@@ -48,7 +53,8 @@ public class SpringSecurityConfig {
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new JwtAuthEntryPoint())
+                .exceptionHandling()
+                .authenticationEntryPoint(new JwtAuthEntryPoint())
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -56,12 +62,11 @@ public class SpringSecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        var authProvider = new DaoAuthenticationProvider();
 
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 
     @Bean
@@ -69,9 +74,4 @@ public class SpringSecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

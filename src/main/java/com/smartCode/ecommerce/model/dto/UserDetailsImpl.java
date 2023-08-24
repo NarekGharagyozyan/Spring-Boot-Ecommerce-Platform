@@ -29,14 +29,14 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsImpl build(Integer id, String username, String role) {
+    public static UserDetailsImpl build(Integer id, String username, String password, String role) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
 
         return new UserDetailsImpl(
                 id,
                 username,
-                null,
+                password,
                 authorities);
     }
 

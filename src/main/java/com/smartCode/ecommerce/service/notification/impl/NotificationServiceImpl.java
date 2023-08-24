@@ -7,15 +7,14 @@ import com.smartCode.ecommerce.model.dto.notification.NotificationResponseDto;
 import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import com.smartCode.ecommerce.repository.UserRepository;
 import com.smartCode.ecommerce.service.notification.NotificationService;
+import com.smartCode.ecommerce.service.producer.ProducerServiceActivity;
+import com.smartCode.ecommerce.service.producer.ProducerServiceNotification;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,7 +23,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationFeignClient notificationFeignClient;
     private final UserRepository userRepository;
-
+    private final ProducerServiceNotification producerServiceNotification;
     @Override
     @Transactional
     public NotificationResponseDto create(NotificationRequestDto notificationRequestDto) {

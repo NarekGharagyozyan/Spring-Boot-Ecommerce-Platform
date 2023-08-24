@@ -1,0 +1,91 @@
+2023-08-14 12:46:54.507  INFO 18732 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : Starting EcommerceApplication using Java 19.0.1 on Laptop-Narek with PID 18732 (C:\Users\user\Desktop\ecommerce\target\classes started by user in C:\Users\user\Desktop\ecommerce)
+2023-08-14 12:46:54.511  INFO 18732 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-08-14 12:46:54.671  INFO 18732 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-08-14 12:46:54.672  INFO 18732 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-08-14 12:46:56.418  INFO 18732 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-08-14 12:46:56.586  INFO 18732 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 154 ms. Found 4 JPA repository interfaces.
+2023-08-14 12:46:57.074  INFO 18732 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=f9e9fecd-3c70-39bb-ae5c-8a8cbb3aa6d4
+2023-08-14 12:46:58.701  INFO 18732 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-08-14 12:46:58.718  INFO 18732 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-08-14 12:46:58.719  INFO 18732 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.78]
+2023-08-14 12:46:58.888  INFO 18732 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-08-14 12:46:58.888  INFO 18732 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4214 ms
+2023-08-14 12:46:59.589  INFO 18732 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-08-14 12:46:59.859  INFO 18732 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-08-14 12:47:00.212  INFO 18732 --- [restartedMain] liquibase.database                       : Set default schema name to public
+2023-08-14 12:47:00.389  INFO 18732 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-08-14 12:47:01.050  INFO 18732 --- [restartedMain] liquibase.changelog                      : Reading from public.databasechangelog
+2023-08-14 12:47:01.136  INFO 18732 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-08-14 12:47:01.525  INFO 18732 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-08-14 12:47:01.658  INFO 18732 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-08-14 12:47:02.015  INFO 18732 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-08-14 12:47:02.335  INFO 18732 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL10Dialect
+2023-08-14 12:47:03.589  INFO 18732 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-08-14 12:47:03.605  INFO 18732 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-08-14 12:47:05.949  INFO 18732 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-08-14 12:47:06.778  INFO 18732 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@44b57391, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@16e39342, org.springframework.security.web.context.SecurityContextPersistenceFilter@2d31d9, org.springframework.security.web.header.HeaderWriterFilter@61d721ff, org.springframework.security.web.authentication.logout.LogoutFilter@415d3a39, com.smartCode.ecommerce.util.jwt.JwtTokenFilter@38a7008d, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@39164cc2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@505c01c0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4ad506cf, org.springframework.security.web.session.SessionManagementFilter@159f6a8b, org.springframework.security.web.access.ExceptionTranslationFilter@700401e6, org.springframework.security.web.access.intercept.AuthorizationFilter@2b413d4e]
+2023-08-14 12:47:09.056  INFO 18732 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-08-14 12:47:09.207  INFO 18732 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : Started EcommerceApplication in 15.664 seconds (JVM running for 17.347)
+2023-08-14 12:47:15.591  INFO 18732 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-08-14 12:47:15.591  INFO 18732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-08-14 12:47:15.595  INFO 18732 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-08-14 12:47:15.797  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.controller.AccountController.login() with argument[s] = [com.smartCode.ecommerce.model.dto.user.UserLoginDto@6a598ab6]
+2023-08-14 12:47:15.888  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.user.impl.UserServiceImpl.login() with argument[s] = [narek0710, narek2003]
+2023-08-14 12:47:16.062  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.user.impl.UserDetailsServiceImpl.loadUserByUsername() with argument[s] = [narek0710]
+2023-08-14 12:47:16.085  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.user.impl.UserDetailsServiceImpl() with result = com.smartCode.ecommerce.model.entity.user.UserEntity@47943592
+2023-08-14 12:47:16.234  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.user.impl.UserDetailsServiceImpl.loadUserByUsername() with argument[s] = [narek0710]
+2023-08-14 12:47:16.258  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.user.impl.UserDetailsServiceImpl() with result = com.smartCode.ecommerce.model.entity.user.UserEntity@47943592
+2023-08-14 12:47:16.260  INFO 18732 --- [http-nio-8080-exec-1] c.s.ecommerce.util.jwt.JwtTokenProvider  : generate access token
+2023-08-14 12:47:16.800  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.token.impl.AccessTokenServiceImpl.saveToken() with argument[s] = [com.smartCode.ecommerce.model.entity.token.AccessTokenEntity@538160d8]
+2023-08-14 12:47:16.885  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.token.impl.AccessTokenServiceImpl() with result = null
+2023-08-14 12:47:16.885  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.user.impl.UserServiceImpl() with result = com.smartCode.ecommerce.model.dto.user.UserAuthDto@7ff2e7b8
+2023-08-14 12:47:16.895  INFO 18732 --- [http-nio-8080-exec-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.controller.AccountController() with result = <200 OK OK,com.smartCode.ecommerce.model.dto.user.UserAuthDto@7ff2e7b8,[]>
+2023-08-14 12:49:32.361  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.token.impl.AccessTokenServiceImpl.getToken() with argument[s] = [VNnRxqR0OqtRxYgatb6Rcjl7CSSQrQ-1QScJpk8ZXQdG0BM5191Cpef3IJdAk-sy26bZ-F1q7eDc5a9IHqvXjg]
+2023-08-14 12:49:32.373  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.token.impl.AccessTokenServiceImpl() with result = com.smartCode.ecommerce.model.entity.token.AccessTokenEntity@f5b5822
+2023-08-14 12:49:32.375  INFO 18732 --- [http-nio-8080-exec-5] c.s.ecommerce.util.jwt.JwtTokenProvider  : get id
+2023-08-14 12:49:32.378  INFO 18732 --- [http-nio-8080-exec-5] c.s.ecommerce.util.jwt.JwtTokenProvider  : get subject
+2023-08-14 12:49:32.407  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.controller.CardController.createCard() with argument[s] = [com.smartCode.ecommerce.model.dto.card.CardRequestDto@2e3ee122]
+2023-08-14 12:49:32.419  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.card.impl.CardServiceImpl.create() with argument[s] = [com.smartCode.ecommerce.model.dto.card.CardRequestDto@2e3ee122]
+2023-08-14 12:49:33.543  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.card.impl.CardServiceImpl() with result = com.smartCode.ecommerce.model.dto.card.CardResponseDto@26db15b5
+2023-08-14 12:49:33.549  INFO 18732 --- [http-nio-8080-exec-5] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.controller.CardController() with result = <200 OK OK,com.smartCode.ecommerce.model.dto.card.CardResponseDto@26db15b5,[]>
+2023-08-14 12:49:33.554  INFO 18732 --- [task-1] c.smartCode.ecommerce.aop.LoggingAspect  : Enter: com.smartCode.ecommerce.service.action.impl.ActionServiceImpl.createAction() with argument[s] = [Create, Card, 2023-08-14T12:49:32.426888500, 2]
+2023-08-14 12:49:35.937  INFO 18732 --- [task-1] c.smartCode.ecommerce.aop.LoggingAspect  : Exit: com.smartCode.ecommerce.service.action.impl.ActionServiceImpl() with result = null
+2023-08-14 12:50:40.650  INFO 18732 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-08-14 12:50:40.702  INFO 18732 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-08-14 12:50:40.727  INFO 18732 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-08-14 22:35:53.738  INFO 18148 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : Starting EcommerceApplication using Java 19.0.1 on Laptop-Narek with PID 18148 (C:\Users\user\Desktop\ecommerce\target\classes started by user in C:\Users\user\Desktop\ecommerce)
+2023-08-14 22:35:53.740  INFO 18148 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : No active profile set, falling back to 1 default profile: "default"
+2023-08-14 22:35:53.825  INFO 18148 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-08-14 22:35:53.825  INFO 18148 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-08-14 22:35:55.662  INFO 18148 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-08-14 22:35:55.776  INFO 18148 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 101 ms. Found 4 JPA repository interfaces.
+2023-08-14 22:35:56.148  INFO 18148 --- [restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=f9e9fecd-3c70-39bb-ae5c-8a8cbb3aa6d4
+2023-08-14 22:35:57.323  INFO 18148 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2023-08-14 22:35:57.335  INFO 18148 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-08-14 22:35:57.336  INFO 18148 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.78]
+2023-08-14 22:35:57.451  INFO 18148 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-08-14 22:35:57.452  INFO 18148 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3626 ms
+2023-08-14 22:35:57.996  INFO 18148 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-08-14 22:35:58.205  INFO 18148 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-08-14 22:35:58.481  INFO 18148 --- [restartedMain] liquibase.database                       : Set default schema name to public
+2023-08-14 22:35:58.694  INFO 18148 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-08-14 22:35:59.083  INFO 18148 --- [restartedMain] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2023-08-14 22:35:59.103  INFO 18148 --- [restartedMain] liquibase.changelog                      : Reading from public.databasechangelog
+2023-08-14 22:35:59.305  INFO 18148 --- [restartedMain] liquibase.changelog                      : SQL in file classpath:/db/changelog/V1__initialization.sql executed
+2023-08-14 22:35:59.311  INFO 18148 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::1::Narek ran successfully in 103ms
+2023-08-14 22:35:59.421  INFO 18148 --- [restartedMain] liquibase.changelog                      : Data loaded from 'roles.csv' into table 'roles'
+2023-08-14 22:35:59.425  INFO 18148 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::2::Narek ran successfully in 99ms
+2023-08-14 22:35:59.438  INFO 18148 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-08-14 22:35:59.606  INFO 18148 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-08-14 22:35:59.702  INFO 18148 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.15.Final
+2023-08-14 22:35:59.959  INFO 18148 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-08-14 22:36:00.160  INFO 18148 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL10Dialect
+2023-08-14 22:36:01.004  INFO 18148 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-08-14 22:36:01.019  INFO 18148 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-08-14 22:36:02.689  INFO 18148 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-08-14 22:36:03.203  INFO 18148 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@59c5d484, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@59c45d56, org.springframework.security.web.context.SecurityContextPersistenceFilter@261057d1, org.springframework.security.web.header.HeaderWriterFilter@752d87dc, org.springframework.security.web.authentication.logout.LogoutFilter@ad58b32, com.smartCode.ecommerce.util.jwt.JwtTokenFilter@61ad7162, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2453c91b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@59ac9f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@317a8a5a, org.springframework.security.web.session.SessionManagementFilter@2f050575, org.springframework.security.web.access.ExceptionTranslationFilter@2b129120, org.springframework.security.web.access.intercept.AuthorizationFilter@61a656da]
+2023-08-14 22:36:04.657  INFO 18148 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2023-08-14 22:36:04.773  INFO 18148 --- [restartedMain] c.s.ecommerce.EcommerceApplication       : Started EcommerceApplication in 11.75 seconds (JVM running for 13.003)
+2023-08-14 22:45:13.854  INFO 18148 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-08-14 22:45:13.877  INFO 18148 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-08-14 22:45:13.884  INFO 18148 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

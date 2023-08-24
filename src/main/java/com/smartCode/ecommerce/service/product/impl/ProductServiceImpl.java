@@ -16,11 +16,14 @@ import com.smartCode.ecommerce.util.event.publisher.product.ProductDeleteEventPu
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -55,8 +58,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> findAllProducts() {
-        return productMapper.toResponseDtoList(productRepository.findAll());
+    public Page<ProductResponseDto> findAllProducts(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest).map(productMapper::toResponseDto);
     }
 
     @Override
@@ -124,13 +127,13 @@ public class ProductServiceImpl implements ProductService {
             var predicates = new ArrayList<Predicate>();
 
             if (nonNull(productSearch.getText())) {
-                Predicate nameLike = criteriaBuilder.like(root.get(Root.NAME), "%" + productSearch.getText() + "%");
+                Predicate nameLike = criteriaBuilder.like(criteriaBuilder.lower(root.get(Root.NAME)), "%" + productSearch.getText().toLowerCase() + "%");
                 predicates.add(nameLike);
 
-                Predicate lastNameLike = criteriaBuilder.like(root.get(Root.COMPANY), "%" + productSearch.getText() + "%");
+                Predicate lastNameLike = criteriaBuilder.like(criteriaBuilder.lower(root.get(Root.COMPANY)), "%" + productSearch.getText().toLowerCase() + "%");
                 predicates.add(lastNameLike);
 
-                Predicate emailLike = criteriaBuilder.like(root.get(Root.CATEGORY), "%" + productSearch.getText() + "%");
+                Predicate emailLike = criteriaBuilder.like(criteriaBuilder.lower(root.get(Root.CATEGORY)), "%" + productSearch.getText().toLowerCase() + "%");
                 predicates.add(emailLike);
             }
             return criteriaBuilder.or(predicates.toArray(new Predicate[0]));

@@ -4,6 +4,7 @@ import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.feign.CardFeignClient;
 import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
+import com.smartCode.ecommerce.service.action.impl.ActionServiceImpl;
 import com.smartCode.ecommerce.service.card.CardService;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
@@ -22,9 +23,8 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
 
     private final CardFeignClient cardFeignClient;
-    private final CardCreationEventPublisher cardCreationEventPublisher;
     private final CardDeleteEventPublisher cardDeleteEventPublisher;
-
+    private final CardCreationEventPublisher cardCreationEventPublisher;
     @Override
     @Transactional
     public void deleteByCardId(Integer cardId) {
@@ -59,7 +59,6 @@ public class CardServiceImpl implements CardService {
 
 
         cardCreationEventPublisher.publishCardCreationEvent(cardRequestDto);
-
         return cardFeignClient.createCard(cardRequestDto).getBody();
     }
 

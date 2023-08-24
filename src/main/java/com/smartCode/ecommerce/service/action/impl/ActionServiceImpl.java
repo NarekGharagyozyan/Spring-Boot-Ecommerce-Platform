@@ -3,20 +3,18 @@ package com.smartCode.ecommerce.service.action.impl;
 import com.smartCode.ecommerce.feign.ActionFeignClient;
 import com.smartCode.ecommerce.model.dto.action.ActionRequestDto;
 import com.smartCode.ecommerce.service.action.ActionService;
-import lombok.AccessLevel;
+import com.smartCode.ecommerce.service.producer.ProducerServiceActivity;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class ActionServiceImpl implements ActionService {
 
-    private final ActionFeignClient actionFeignClient;
+    private final ProducerServiceActivity producerServiceActivity;
     @Override
     @Transactional
     public void createAction(String actionType, String entityType, LocalDateTime actionDate, Integer userId) {
@@ -26,6 +24,6 @@ public class ActionServiceImpl implements ActionService {
         actionRequestDto.setActionDate(actionDate);
         actionRequestDto.setUserId(userId);
 
-        actionFeignClient.saveAction(actionRequestDto);
+        producerServiceActivity.sendMessage(actionRequestDto);
     }
 }

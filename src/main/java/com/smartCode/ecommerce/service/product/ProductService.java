@@ -6,6 +6,8 @@ import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.model.entity.product.ProductEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public interface ProductService {
 
     ProductResponseDto findProductById(Integer id);
 
-    List<ProductResponseDto> findAllProducts();
+    Page<ProductResponseDto> findAllProducts(PageRequest pageRequest);
 
     ProductResponseDto updateProduct(Integer id, ProductUpdateDto productUpdateDto);
 

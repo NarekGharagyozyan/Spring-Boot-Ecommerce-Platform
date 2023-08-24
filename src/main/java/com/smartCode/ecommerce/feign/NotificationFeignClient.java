@@ -1,6 +1,6 @@
 package com.smartCode.ecommerce.feign;
 
-import com.smartCode.ecommerce.configuration.NotificationFeignConfig;
+import com.smartCode.ecommerce.configuration.feign.NotificationFeignConfig;
 import com.smartCode.ecommerce.model.dto.notification.NotificationRequestDto;
 import com.smartCode.ecommerce.model.dto.notification.NotificationResponseDto;
 import com.smartCode.ecommerce.util.constants.Path;

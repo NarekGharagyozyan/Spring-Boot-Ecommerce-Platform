@@ -30,7 +30,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AccessTokenRepository tokenRepository;
     private final AccessTokenService tokenService;
 
     @Override
@@ -48,11 +47,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        /*if(!tokenRepository.existsTokenByToken(token.split("\\.")[2])){
-            chain.doFilter(request,response);
-            return;
-        }*/
-
         if(tokenService.getToken(token.split("\\.")[2]) == null){
             chain.doFilter(request,response);
             return;
@@ -61,6 +55,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         var userDetails = UserDetailsImpl.build(
                 jwtTokenProvider.getId(token),
                 jwtTokenProvider.getSubject(token),
+                null,
                 jwtTokenProvider.getRole(token)
         );
 

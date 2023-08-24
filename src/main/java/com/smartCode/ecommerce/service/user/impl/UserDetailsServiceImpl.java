@@ -24,6 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsernameOrEmailOrPhone(username, username, username);
         return UserDetailsImpl.build(userEntity.getId(),
                                 userEntity.getUsername(),
+                                userEntity.getPassword(),
                                 userEntity.getRole().getRole().getName());
     }
 

@@ -17,6 +17,7 @@ import com.smartCode.ecommerce.model.entity.token.AccessTokenEntity;
 import com.smartCode.ecommerce.model.entity.user.UserEntity;
 import com.smartCode.ecommerce.repository.RoleRepository;
 import com.smartCode.ecommerce.repository.UserRepository;
+import com.smartCode.ecommerce.service.action.ActionService;
 import com.smartCode.ecommerce.service.token.AccessTokenService;
 import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.codeGenerator.RandomGenerator;
@@ -29,6 +30,7 @@ import com.smartCode.ecommerce.util.jwt.JwtTokenProvider;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +43,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +64,7 @@ public class UserServiceImpl implements UserService {
     private final AccessTokenService tokenService;
     private final CardFeignClient cardFeignClient;
     private final RegistrationEventPublisher registrationEventPublisher;
+    private final ActionService actionService;
 
     @Override
     @Transactional
@@ -76,12 +80,10 @@ public class UserServiceImpl implements UserService {
         }
 
         String generatedCode = RandomGenerator.generateNumericString(6);
-
         UserEntity userEntity = setProperties(user, generatedCode);
         userEntity = userRepository.save(userEntity);
-
+        actionService.createAction("registration","user", LocalDateTime.now(), userEntity.getId());
         registrationEventPublisher.publishRegistrationEvent(userEntity);
-
         return userMapper.toResponseDto(userEntity);
     }
 
@@ -104,30 +106,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserAuthDto login(String username, String password) {
-        /*UserEntity byUsername = userRepository.findByUsername(username);
-        if (nonNull(byUsername)) {
-            if (byUsername.getIsVerified()) {
-                if (MD5Encoder.encode(password).equals(byUsername.getPassword()))
-                    return userMapper.toResponseDto(byUsername);
-                else
-                    throw new ValidationException(Message.WRONG_USERNAME_OR_PASSWORD);
-            } else
-                throw new VerificationException(Message.VERIFY_ACCOUNT);
-        }
-        throw new ResourceNotFoundException(Message.USER_NOT_FOUND);*/
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password));
         UserDetailsImpl user = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
-
         Integer userId = user.getId();
         List<String> roles = getRoles(user);
         String role = roles.get(0);
 
-        String accessToken = jwtTokenProvider.generateAccessToken(userId, user.getUsername(), role);
+        String accessToken = jwtTokenProvider.generateAccessToken(userId, username, role);
 
         String token = accessToken.split("\\.")[2];
-        System.out.println(token);
         AccessTokenEntity tokenEntity = new AccessTokenEntity();
         tokenEntity.setToken(token);
         tokenEntity.setUser(userRepository.findById(userId).get());

@@ -1,4 +1,4 @@
-package com.smartCode.ecommerce.configuration;
+package com.smartCode.ecommerce.configuration.feign;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
