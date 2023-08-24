@@ -17,11 +17,11 @@ public class ActionServiceImpl implements ActionService {
     private final ProducerServiceActivity producerServiceActivity;
     @Override
     @Transactional
-    public void createAction(String actionType, String entityType, LocalDateTime actionDate, Integer userId) {
+    public void createAction(String actionType, String entityType,  Integer userId) {
         ActionRequestDto actionRequestDto = new ActionRequestDto();
         actionRequestDto.setActionType(actionType);
         actionRequestDto.setEntityType(entityType);
-        actionRequestDto.setActionDate(actionDate);
+        actionRequestDto.setActionDate(LocalDateTime.now());
         actionRequestDto.setUserId(userId);
 
         producerServiceActivity.sendMessage(actionRequestDto);

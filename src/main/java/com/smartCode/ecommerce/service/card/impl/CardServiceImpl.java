@@ -4,15 +4,13 @@ import com.smartCode.ecommerce.exceptions.ValidationException;
 import com.smartCode.ecommerce.feign.CardFeignClient;
 import com.smartCode.ecommerce.model.dto.card.CardRequestDto;
 import com.smartCode.ecommerce.model.dto.card.CardResponseDto;
-import com.smartCode.ecommerce.service.action.impl.ActionServiceImpl;
+import com.smartCode.ecommerce.service.action.ActionService;
 import com.smartCode.ecommerce.service.card.CardService;
+import com.smartCode.ecommerce.util.constants.Action;
+import com.smartCode.ecommerce.util.constants.Entity;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
-import com.smartCode.ecommerce.util.event.publisher.card.CardCreationEventPublisher;
-import com.smartCode.ecommerce.util.event.publisher.card.CardDeleteEventPublisher;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,22 +21,24 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
 
     private final CardFeignClient cardFeignClient;
-    private final CardDeleteEventPublisher cardDeleteEventPublisher;
-    private final CardCreationEventPublisher cardCreationEventPublisher;
+    private final ActionService actionService;
+
     @Override
     @Transactional
     public void deleteByCardId(Integer cardId) {
         /*RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete(String.format("http://localhost:8081/cards/delete/%d",cardId));*/
         cardFeignClient.deleteByCardId(cardId);
-        cardDeleteEventPublisher.publishCardDeleteEvent();
+        actionService.createAction(Action.DELETE, Entity.CARD, CurrentUser.getId());
     }
+
     @Override
     @Transactional
     public void deleteAllByOwnerId(Integer userId) {
         /*RestTemplate restTemplate = new RestTemplate();
         restTemplate.delete(String.format("http://localhost:8081/cards/delete/owner/%d",userId));*/
         cardFeignClient.deleteAllByOwnerId(userId);
+        actionService.createAction(Action.DELETE, Entity.CARD, CurrentUser.getId());
     }
 
 
@@ -57,8 +57,7 @@ public class CardServiceImpl implements CardService {
                 cardRequestDto,
                 CardResponseDto.class).getBody();*/
 
-
-        cardCreationEventPublisher.publishCardCreationEvent(cardRequestDto);
+        actionService.createAction(Action.CREATE, Entity.CARD, CurrentUser.getId());
         return cardFeignClient.createCard(cardRequestDto).getBody();
     }
 

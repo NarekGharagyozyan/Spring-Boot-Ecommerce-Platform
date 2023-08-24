@@ -1,11 +1,9 @@
 package com.smartCode.ecommerce.service.token.impl;
 
 import com.smartCode.ecommerce.model.entity.token.AccessTokenEntity;
-import com.smartCode.ecommerce.repository.AccessTokenRepository;
+import com.smartCode.ecommerce.repository.accessToken.AccessTokenRepository;
 import com.smartCode.ecommerce.service.token.AccessTokenService;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

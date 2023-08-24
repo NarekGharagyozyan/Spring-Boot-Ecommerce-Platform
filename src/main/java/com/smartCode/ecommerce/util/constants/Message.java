@@ -8,6 +8,8 @@ public interface Message {
 
     String CARD_NOT_FOUND = "Card not found";
 
+    String ORDER_NOT_FOUND = "Order not found";
+
     String INCORRECT_CODE = "Incorrect code";
 
     String VERIFY_ACCOUNT = "Verify your account";
@@ -23,4 +25,5 @@ public interface Message {
     String USER_WITH_USERNAME_ALREADY_EXISTS = "User with this username already exists";
     String USER_WITH_EMAIL_ALREADY_EXISTS = "User with this email already exists";
     String USER_WITH_PHONE_ALREADY_EXISTS = "User with this phone number already exists";
+
 }

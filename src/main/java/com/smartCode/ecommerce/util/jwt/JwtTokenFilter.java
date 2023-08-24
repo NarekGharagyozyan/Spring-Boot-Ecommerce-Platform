@@ -1,17 +1,12 @@
 package com.smartCode.ecommerce.util.jwt;
 
 import com.smartCode.ecommerce.model.dto.UserDetailsImpl;
-import com.smartCode.ecommerce.repository.AccessTokenRepository;
 import com.smartCode.ecommerce.service.token.AccessTokenService;
-import com.smartCode.ecommerce.util.currentUser.CurrentUser;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

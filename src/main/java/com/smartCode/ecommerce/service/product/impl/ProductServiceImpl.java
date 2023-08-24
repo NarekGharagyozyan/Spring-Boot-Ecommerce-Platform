@@ -7,23 +7,21 @@ import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
 import com.smartCode.ecommerce.model.dto.user.filterAndSearch.FilterSearchUser;
 import com.smartCode.ecommerce.model.entity.product.ProductEntity;
-import com.smartCode.ecommerce.repository.ProductRepository;
+import com.smartCode.ecommerce.repository.product.ProductRepository;
+import com.smartCode.ecommerce.service.action.ActionService;
 import com.smartCode.ecommerce.service.product.ProductService;
+import com.smartCode.ecommerce.util.constants.Action;
+import com.smartCode.ecommerce.util.constants.Entity;
 import com.smartCode.ecommerce.util.constants.Message;
 import com.smartCode.ecommerce.util.constants.Root;
-import com.smartCode.ecommerce.util.event.publisher.product.ProductCreationEventPublisher;
-import com.smartCode.ecommerce.util.event.publisher.product.ProductDeleteEventPublisher;
-import lombok.AccessLevel;
+import com.smartCode.ecommerce.util.currentUser.CurrentUser;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,15 +35,14 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final ProductCreationEventPublisher productCreationEventPublisher;
-    private final ProductDeleteEventPublisher productDeleteEventPublisher;
+    private final ActionService actionService;
 
     @Override
     @Transactional
     public ProductResponseDto create(ProductEntity productEntity) {
         setProductDeadline(productEntity);
         ProductEntity save = productRepository.save(productEntity);
-        productCreationEventPublisher.publishProductCreationEvent();
+        actionService.createAction(Action.CREATE, Entity.PRODUCT, CurrentUser.getId());
         return productMapper.toResponseDto(save);
     }
 
@@ -74,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
         excistingProductEntity.setCategory(productUpdateDto.getCategory());
 
         productRepository.save(excistingProductEntity);
+        actionService.createAction(Action.UPDATE, Entity.PRODUCT, CurrentUser.getId());
         return productMapper.toResponseDto(excistingProductEntity);
     }
 
@@ -90,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
         existingProd.setCount(productUpdateDto.getCount() != 0 ? productUpdateDto.getCount() : existingProd.getCount());
 
         productRepository.save(existingProd);
+        actionService.createAction(Action.UPDATE, Entity.PRODUCT, CurrentUser.getId());
         return productMapper.toResponseDto(existingProd);
     }
 
@@ -145,7 +144,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProduct(Integer id) {
         productRepository.deleteById(id);
-        productDeleteEventPublisher.publishProductDeleteEvent();
+        actionService.createAction(Action.DELETE, Entity.PRODUCT, CurrentUser.getId());
     }
 
     private static void setProductDeadline(ProductEntity productEntity) {

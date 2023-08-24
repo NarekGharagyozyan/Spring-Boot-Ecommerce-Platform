@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.MappedSuperclass;
+import java.math.BigDecimal;
 
 @MappedSuperclass
 @Getter
@@ -14,7 +15,7 @@ public class ProductBaseDto {
 
     private String name;
     private String company;
-    private Double price;
+    private BigDecimal price;
     private String category;
     private int count;
 

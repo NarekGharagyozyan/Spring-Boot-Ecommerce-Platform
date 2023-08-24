@@ -24,4 +24,6 @@ public interface Path {
     String READY = "/ready";
     String WAITING = "/waiting";
     String SAVE = "/save";
+    String ORDERS = "/orders";
+    String BASKET = "/basket";
 }
