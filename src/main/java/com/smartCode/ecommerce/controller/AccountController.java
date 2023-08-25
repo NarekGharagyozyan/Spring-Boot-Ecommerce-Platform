@@ -11,9 +11,7 @@ import com.smartCode.ecommerce.service.user.UserService;
 import com.smartCode.ecommerce.util.constants.Path;
 import com.smartCode.ecommerce.util.constants.RoleConstants;
 import com.smartCode.ecommerce.util.currentUser.CurrentUser;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -74,7 +71,6 @@ public class AccountController {
         return ResponseEntity.ok(allUsers);
     }
 
-
     @PatchMapping(Path.UPDATE)
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<UserResponseDto> updateUserPartial(@RequestBody @Valid UserUpdateDto userUpdateDto) {
@@ -91,7 +87,7 @@ public class AccountController {
 
     @PostMapping(Path.VERIFY)
     public ResponseEntity<Void> verifyUser(@RequestParam @Email String email,
-                                              @RequestParam @Size(min = 6, max = 6) String code) {
+                                           @RequestParam @Size(min = 6, max = 6) String code) {
         userService.verify(email, code);
         return ResponseEntity.ok().build();
     }
