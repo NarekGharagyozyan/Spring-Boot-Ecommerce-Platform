@@ -2,6 +2,7 @@ package com.smartCode.ecommerce.service.product.impl;
 
 import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.mapper.ProductMapper;
+import com.smartCode.ecommerce.model.dto.product.ProductRequestDto;
 import com.smartCode.ecommerce.model.dto.product.ProductResponseDto;
 import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
@@ -39,7 +40,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDto create(ProductEntity productEntity) {
+    public ProductResponseDto create(ProductRequestDto productRequestDto) {
+        ProductEntity productEntity = productMapper.toEntity(productRequestDto);
         setProductDeadline(productEntity);
         ProductEntity save = productRepository.save(productEntity);
         actionService.createAction(Action.CREATE, Entity.PRODUCT, CurrentUser.getId());

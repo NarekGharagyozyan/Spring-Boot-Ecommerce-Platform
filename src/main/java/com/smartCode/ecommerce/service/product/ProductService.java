@@ -1,6 +1,7 @@
 package com.smartCode.ecommerce.service.product;
 
 
+import com.smartCode.ecommerce.model.dto.product.ProductRequestDto;
 import com.smartCode.ecommerce.model.dto.product.ProductResponseDto;
 import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductResponseDto create(ProductEntity productEntity);
+    ProductResponseDto create(ProductRequestDto productRequestDto);
 
     ProductResponseDto findProductById(Integer id);
 

@@ -1,5 +1,6 @@
 package com.smartCode.ecommerce.controller;
 
+import com.smartCode.ecommerce.model.dto.product.ProductRequestDto;
 import com.smartCode.ecommerce.model.dto.product.ProductResponseDto;
 import com.smartCode.ecommerce.model.dto.product.ProductUpdateDto;
 import com.smartCode.ecommerce.model.dto.product.filterAndSearch.FilterSearchProduct;
@@ -55,8 +56,8 @@ public class ProductController {
 
     @PostMapping(Path.CREATE)
     @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
-    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody @Valid ProductEntity productEntity) {
-        ProductResponseDto productResponseDto = productService.create(productEntity);
+    public ResponseEntity<ProductResponseDto> createProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
+        ProductResponseDto productResponseDto = productService.create(productRequestDto);
         return ResponseEntity.ok(productResponseDto);
     }
 
