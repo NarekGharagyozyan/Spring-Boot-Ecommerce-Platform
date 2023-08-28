@@ -1,5 +1,6 @@
 package com.smartCode.ecommerce.model.dto.orderItem;
 
+import com.smartCode.ecommerce.model.dto.product.productDetails.ProductDetails;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,5 @@ public class OrderItemResponseDto {
 
     private BigDecimal totalPrice;
 
-    private Integer productId;
+    private ProductDetails productDetails;
 }

@@ -2,10 +2,12 @@ package com.smartCode.ecommerce.service.order.impl;
 
 import com.smartCode.ecommerce.exceptions.ResourceNotFoundException;
 import com.smartCode.ecommerce.mapper.OrderMapper;
+import com.smartCode.ecommerce.mapper.ProductMapper;
 import com.smartCode.ecommerce.model.dto.order.OrderResponseDto;
 import com.smartCode.ecommerce.model.entity.basket.BasketItemEntity;
 import com.smartCode.ecommerce.model.entity.order.OrderEntity;
 import com.smartCode.ecommerce.model.entity.orderItem.OrderItemEntity;
+import com.smartCode.ecommerce.model.entity.product.ProductEntity;
 import com.smartCode.ecommerce.repository.basketItem.BasketItemRepository;
 import com.smartCode.ecommerce.repository.order.OrderRepository;
 import com.smartCode.ecommerce.repository.user.UserRepository;
@@ -39,15 +41,17 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentService paymentService;
     private final OrderMapper orderMapper;
     private final ActionService actionService;
+    private final ProductMapper productMapper;
 
     @Override
     @Transactional
     public OrderResponseDto createOrder(PaymentType paymentType, String note) {
         List<BasketItemEntity> list = basketItemRepository.findAllByUserId(CurrentUser.getId());
+
         OrderEntity order = createOrderAndSetUserStatusNote(note);
         Map<Integer, BigDecimal> map = puttingCountAndPriceInTheMap(list);
-
         BigDecimal totalPrice = countingTotalPrice(map);
+
         order.setTotalAmount(totalPrice);
         List<OrderItemEntity> orderItems = getOrderItemEntities(list, order);
         order.setOrderItems(orderItems);
@@ -107,7 +111,9 @@ public class OrderServiceImpl implements OrderService {
             OrderItemEntity orderItemEntity = new OrderItemEntity();
             orderItemEntity.setOrder(order);
             orderItemEntity.setCount(basketItemEntity.getCount());
-            orderItemEntity.setProductId(basketItemEntity.getProduct().getId());
+//            orderItemEntity.setProductDetails(basketItemEntity.getProduct().getId());
+            ProductEntity product = basketItemEntity.getProduct();
+            orderItemEntity.setProductDetails(productMapper.toProductDetails(product));
             orderItemEntity.setTotalPrice(basketItemEntity.getProduct().getPrice().multiply(new BigDecimal(basketItemEntity.getCount())));
             orderItems.add(orderItemEntity);
         }

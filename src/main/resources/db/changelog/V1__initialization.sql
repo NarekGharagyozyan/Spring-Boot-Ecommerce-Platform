@@ -95,7 +95,7 @@ create table if not exists order_item
     created_at  timestamp,
     updated_at  timestamp,
     count       integer        not null,
-    product_id  integer        not null,
+    product_details jsonb,
     total_price numeric(19, 2) not null,
     order_id    integer        not null
         constraint fkt4dc2r9nbvbujrljv3e23iibt

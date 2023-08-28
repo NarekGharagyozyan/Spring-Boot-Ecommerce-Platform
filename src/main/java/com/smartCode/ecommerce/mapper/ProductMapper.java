@@ -2,6 +2,7 @@ package com.smartCode.ecommerce.mapper;
 
 import com.smartCode.ecommerce.model.dto.product.ProductRequestDto;
 import com.smartCode.ecommerce.model.dto.product.ProductResponseDto;
+import com.smartCode.ecommerce.model.dto.product.productDetails.ProductDetails;
 import com.smartCode.ecommerce.model.dto.user.UserRequestDto;
 import com.smartCode.ecommerce.model.dto.user.UserResponseDto;
 import com.smartCode.ecommerce.model.entity.product.ProductEntity;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface ProductMapper {
 
     ProductEntity toEntity (ProductRequestDto productRequestDto);
+
+    ProductDetails toProductDetails(ProductEntity productEntity);
 
     ProductResponseDto toResponseDto(ProductEntity productEntity);
 
