@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderItems(orderItems);
         orderRepository.save(order);
         System.out.println(paymentService.pay(paymentType, totalPrice));
-
+        basketItemRepository.deleteAllByUserId(CurrentUser.getId());
         actionService.createAction(Action.CREATE, Entity.ORDER, CurrentUser.getId());
         return orderMapper.toResponseDto(order);
     }

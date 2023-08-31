@@ -32,17 +32,17 @@ public class CardController {
 
     private final CardService cardService;
 
-    @PostMapping(Path.CREATE)
+    @PostMapping
     @PreAuthorize("hasRole('" + RoleConstants.USER_ROLE + "')")
     public ResponseEntity<CardResponseDto> createCard(@RequestBody CardRequestDto cardRequestDto) {
         CardResponseDto cardResponseDto = cardService.create(cardRequestDto);
         return ResponseEntity.ok(cardResponseDto);
     }
 
-    @GetMapping(Path.FIND_WITH_OWNER_ID)
+    @GetMapping(Path.ID)
     @PreAuthorize("hasRole('" + RoleConstants.ADMIN_ROLE + "')")
-    public ResponseEntity<List<CardResponseDto>> findByUserId(@PathVariable @Positive Integer ownerId) {
-        List<CardResponseDto> byUserId = cardService.findByOwnerId(ownerId);
+    public ResponseEntity<List<CardResponseDto>> findByUserId(@PathVariable @Positive Integer id) {
+        List<CardResponseDto> byUserId = cardService.findByOwnerId(id);
         return ResponseEntity.ok(byUserId);
     }
 

@@ -41,11 +41,10 @@ public class SpringSecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(
-                        Path.USERS + Path.REGISTER,
-                        Path.USERS + Path.LOGIN,
-                        Path.USERS + Path.FILTER,
-                        Path.USERS + Path.SEARCH,
-                        Path.USERS + Path.VERIFY,
+                        Path.ACCOUNTS + Path.REGISTER,
+                        Path.ACCOUNTS + Path.LOGIN,
+                        Path.ACCOUNTS + Path.FILTER,
+                        Path.ACCOUNTS + Path.VERIFY,
                         Path.PRODUCTS + Path.FIND,
                         Path.PRODUCTS + Path.FIND_ALL,
                         Path.PRODUCTS + Path.FILTER,

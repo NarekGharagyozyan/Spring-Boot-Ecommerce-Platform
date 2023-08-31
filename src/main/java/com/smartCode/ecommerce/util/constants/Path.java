@@ -2,6 +2,7 @@ package com.smartCode.ecommerce.util.constants;
 
 public interface Path {
     String USERS = "/users";
+    String ACCOUNTS = "/accounts";
     String PRODUCTS = "/products";
     String CARDS = "/cards";
     String NOTIFY = "/notify";
@@ -26,4 +27,6 @@ public interface Path {
     String SAVE = "/save";
     String ORDERS = "/orders";
     String BASKET = "/basket";
+
+    String ID = "/{id}";
 }
